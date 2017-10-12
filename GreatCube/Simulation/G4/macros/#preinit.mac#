@@ -1,0 +1,21 @@
+#Determine if flux calibration (Flux) or energy measurement (Energy) is needed
+/Purdue/detector/setMeasurement Flux
+
+#Set position of First Deetector
+/Purdue/detector/FirstDetectorCoord 0 400 -898 mm
+
+#For Energy measurements 2nd/3rd detector positions determined relative to 1st
+/Purdue/detector/setDetectorSeperation 1000 mm
+/Purdue/detector/setDetectorAngle 45
+
+#For flux measurements set position of 2nd/3rd detector individually
+/Purdue/detector/SecondDetectorCoord 400 0 -898 mm	
+/Purdue/detector/ThirdDetectorCoord -400 0 -898 mm
+
+#Set wether the Lead Sleeves are to be present or not. Default is true.
+/Purdue/detector/setLeadSleeves true
+
+
+
+
+
