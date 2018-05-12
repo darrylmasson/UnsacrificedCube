@@ -1,22 +1,22 @@
-#ifndef __PURDUEELJENDETECTORHIT_H__
-#define __PURDUELJENDETECTORHIT_H__
+#ifndef __CUBEDETECTORHIT_H__
+#define __CUBEDETECTORHIT_H__
 
 #include <G4VHit.hh>
 #include <G4THitsCollection.hh>
 #include <G4Allocator.hh>
 #include <G4ThreeVector.hh>
 
-class PurdueEljenDetectorHit: public G4VHit
+class CubeDetectorHit: public G4VHit
 {
 public:
-	PurdueEljenDetectorHit();
-	~PurdueEljenDetectorHit();
-	PurdueEljenDetectorHit(const PurdueEljenDetectorHit &);
-	const PurdueEljenDetectorHit & operator=(const PurdueEljenDetectorHit &);
-	G4int operator==(const PurdueEljenDetectorHit &) const;
+	CubeDetectorHit();
+	~CubeDetectorHit();
+	CubeDetectorHit(const CubeDetectorHit &);
+	const CubeDetectorHit & operator=(const CubeDetectorHit &);
+	G4int operator==(const CubeDetectorHit &) const;
 
 	inline void* operator new(size_t);
-	inline void  operator delete(void*);
+	inline void	operator delete(void*);
 
 	void Draw();
 	void Print();
@@ -31,8 +31,8 @@ public:
 	void SetPosition(G4ThreeVector hPosition) { m_hPosition = hPosition; };
 	void SetEnergyDeposited(G4double dEnergyDeposited) { m_dEnergyDeposited = dEnergyDeposited; };
 	void SetKineticEnergy(G4double dKineticEnergy) { m_dKineticEnergy = dKineticEnergy; };
-  	void SetPreStepEnergy(G4double dPreStepEnergy) { m_dPreStepEnergy = dPreStepEnergy; };
-    void SetPostStepEnergy(G4double dPostStepEnergy) { m_dPostStepEnergy = dPostStepEnergy; };
+		void SetPreStepEnergy(G4double dPreStepEnergy) { m_dPreStepEnergy = dPreStepEnergy; };
+		void SetPostStepEnergy(G4double dPostStepEnergy) { m_dPostStepEnergy = dPostStepEnergy; };
 	void SetTime(G4double dTime) { m_dTime = dTime; };
 
 	G4int GetTrackId() { return m_iTrackId; };
@@ -42,11 +42,11 @@ public:
 	const G4String &GetCreatorProcess() { return *m_pCreatorProcess; }
 	const G4String &GetDepositingProcess() { return *m_pDepositingProcess; }
 	G4ThreeVector GetPosition() { return m_hPosition; };
-	G4double GetEnergyDeposited() { return m_dEnergyDeposited; };      
-	G4double GetKineticEnergy() { return m_dKineticEnergy; };    
-    G4double GetPreStepEnergy() { return m_dPreStepEnergy; };    
-	G4double GetPostStepEnergy() { return m_dPostStepEnergy; };    
-	G4double GetTime() { return m_dTime; };      
+	G4double GetEnergyDeposited() { return m_dEnergyDeposited; };
+	G4double GetKineticEnergy() { return m_dKineticEnergy; };
+	G4double GetPreStepEnergy() { return m_dPreStepEnergy; };
+	G4double GetPostStepEnergy() { return m_dPostStepEnergy; };
+	G4double GetTime() { return m_dTime; };
 
 private:
 	G4int m_iTrackId;
@@ -58,25 +58,25 @@ private:
 	G4ThreeVector m_hPosition;
 	G4double m_dEnergyDeposited;
 	G4double m_dKineticEnergy;
-  	G4double m_dPreStepEnergy;
-  	G4double m_dPostStepEnergy;
+	G4double m_dPreStepEnergy;
+	G4double m_dPostStepEnergy;
 	G4double m_dTime;
-}
+};
 
-typedef G4THitsCollection<PurdueEljenDetectorHit> PurdueEljenDetectorHitsCollection;
+typedef G4THitsCollection<CubeDetectorHit> CubeDetectorHitsCollection;
 
-extern G4Allocator<PurdueEljenDetectorHit> PurdueEljenDetectorHitAllocator;
+extern G4Allocator<CubeDetectorHit> CubeDetectorHitAllocator;
 
 inline void*
-PurdueEljenDetectorHit::operator new(size_t)
+CubeDetectorHit::operator new(size_t)
 {
-	return((void *) PurdueEljenDetectorHitAllocator.MallocSingle());
+	return((void *) CubeDetectorHitAllocator.MallocSingle());
 }
 
 inline void
-PurdueEljenDetectorHit::operator delete(void *pPurdueEljenDetectorHit)
+CubeDetectorHit::operator delete(void *pCubeDetectorHit)
 {
-	PurdueEljenDetectorHitAllocator.FreeSingle((PurdueEljenDetectorHit*) pPurdueEljenDetectorHit);
+	CubeDetectorHitAllocator.FreeSingle((CubeDetectorHit*) pCubeDetectorHit);
 }
 
 #endif

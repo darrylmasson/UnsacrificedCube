@@ -9,10 +9,10 @@ class PurdueAnalysisManager;
 class PurdueSteppingAction : public G4UserSteppingAction
 {
 public:
-  PurdueSteppingAction(PurdueAnalysisManager* );
-  ~PurdueSteppingAction(){};
+	PurdueSteppingAction(PurdueAnalysisManager* );
+	~PurdueSteppingAction(){};
 
-  void UserSteppingAction(const G4Step*);
+	void UserSteppingAction(const G4Step*);
 
 private:
 

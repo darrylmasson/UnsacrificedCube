@@ -11,7 +11,7 @@ class PurdueStackingAction: public G4UserStackingAction
 public:
 	PurdueStackingAction(PurdueAnalysisManager *pAnalysisManager=0);
 	~PurdueStackingAction();
-  
+	
 	virtual G4ClassificationOfNewTrack ClassifyNewTrack(const G4Track* aTrack);
 	virtual void NewStage();
 	virtual void PrepareNewEvent();

@@ -24,7 +24,7 @@ public:
 	PurdueDetectorMessenger(PurdueDetectorConstruction *pPurdueDetector);
 	~PurdueDetectorMessenger();
 
-	void     SetNewValue(G4UIcommand *pUIcommand, G4String hString);
+	void		 SetNewValue(G4UIcommand *pUIcommand, G4String hString);
 
 private:
 	PurdueDetectorConstruction* m_pPurdueDetector;
@@ -32,13 +32,13 @@ private:
 	G4UIdirectory *m_pDetectorDir;
 
 	G4UIcmdWithADoubleAndUnit *m_pDetectorSeperationCmd;
-        G4UIcmdWithADoubleAndUnit *m_pFirstDetectorCmd;
-        G4UIcmdWithADouble *m_pDetectorAngleCmd;
-        G4UIcmdWithABool *m_pLeadSleevesCmd;
-        G4UIcmdWith3VectorAndUnit *m_pThirdDetectorPositionCmd;
-        G4UIcmdWith3VectorAndUnit *m_pSecondDetectorPositionCmd;   
-        G4UIcmdWith3VectorAndUnit *m_pFirstDetectorPositionCmd;
-        G4UIcmdWithAString *m_pMeasurementCmd;
+				G4UIcmdWithADoubleAndUnit *m_pFirstDetectorCmd;
+				G4UIcmdWithADouble *m_pDetectorAngleCmd;
+				G4UIcmdWithABool *m_pLeadSleevesCmd;
+				G4UIcmdWith3VectorAndUnit *m_pThirdDetectorPositionCmd;
+				G4UIcmdWith3VectorAndUnit *m_pSecondDetectorPositionCmd;	 
+				G4UIcmdWith3VectorAndUnit *m_pFirstDetectorPositionCmd;
+				G4UIcmdWithAString *m_pMeasurementCmd;
  
 
 };

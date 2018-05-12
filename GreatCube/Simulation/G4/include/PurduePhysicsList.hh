@@ -22,65 +22,65 @@ class G4VPhysicsConstructor;
 class PurduePhysicsList: public G4VUserPhysicsList
 {
 public:
-  PurduePhysicsList(G4String fName);
-  ~PurduePhysicsList();
+	PurduePhysicsList(G4String fName);
+	~PurduePhysicsList();
 
 public:
-  void SetCuts();
+	void SetCuts();
 	
-  // functions for the messenger interface
-  void SetEMlowEnergyModel(G4String theModel) { m_hEMlowEnergyModel = theModel; }
-  void SetHadronicModel(G4String theModel)    { m_hHadronicModel = theModel; }
-  void SetCerenkov(G4bool useCerenkov) { m_bCerenkov = useCerenkov; }
-  void SetHistograms(G4bool makeHistos) { makePhysicsHistograms = makeHistos; }
+	// functions for the messenger interface
+	void SetEMlowEnergyModel(G4String theModel) { m_hEMlowEnergyModel = theModel; }
+	void SetHadronicModel(G4String theModel)		{ m_hHadronicModel = theModel; }
+	void SetCerenkov(G4bool useCerenkov) { m_bCerenkov = useCerenkov; }
+	void SetHistograms(G4bool makeHistos) { makePhysicsHistograms = makeHistos; }
 
-  void MakePhysicsPlots();
-  void WriteParameter(G4String parName);
+	void MakePhysicsPlots();
+	void WriteParameter(G4String parName);
 	
 protected:
-  void ConstructParticle();
-  void ConstructProcess();
+	void ConstructParticle();
+	void ConstructProcess();
 
-  void ConstructGeneral();
-  void ConstructEM();
-  void ConstructHad();
-  void ConstructOp();
+	void ConstructGeneral();
+	void ConstructEM();
+	void ConstructHad();
+	void ConstructOp();
 
-  void AddTransportation();
+	void AddTransportation();
 
-  void SetBuilderList1(G4bool flagHP);
-  
-private:
-  G4double cutForGamma;
-  G4double cutForElectron;
-  G4double cutForPositron;
-  G4double cutForProton;
-  G4double cutForAlpha;
-  G4double cutForGenericIon;
-
-  void ConstructMyBosons();
-  void ConstructMyLeptons();
-  void ConstructMyHadrons();
-  void ConstructMyShortLiveds();
-
-private:
-  G4int VerboseLevel;
-  G4int OpVerbLevel;
+	void SetBuilderList1(G4bool flagHP);
 	
-  G4VPhysicsConstructor*               emPhysicsList;
-  G4VPhysicsConstructor*               opPhysicsList;
-  std::vector<G4VPhysicsConstructor*>  hadronPhys;
+private:
+	G4double cutForGamma;
+	G4double cutForElectron;
+	G4double cutForPositron;
+	G4double cutForProton;
+	G4double cutForAlpha;
+	G4double cutForGenericIon;
 
-  //	G4String                 emName;
+	void ConstructMyBosons();
+	void ConstructMyLeptons();
+	void ConstructMyHadrons();
+	void ConstructMyShortLiveds();
+
+private:
+	G4int VerboseLevel;
+	G4int OpVerbLevel;
 	
-  // PurduePhysicsListMessenger *m_pMessenger;
-  G4String                 m_hEMlowEnergyModel;
-  G4String                 m_hHadronicModel;
-  G4bool                   m_bCerenkov;
-  G4DecayPhysics          *particleList;
-  G4bool                   makePhysicsHistograms;
-  
-  G4String physRootFile;
+	G4VPhysicsConstructor*							 emPhysicsList;
+	G4VPhysicsConstructor*							 opPhysicsList;
+	std::vector<G4VPhysicsConstructor*>	hadronPhys;
+
+	//	G4String								 emName;
+	
+	// PurduePhysicsListMessenger *m_pMessenger;
+	G4String								 m_hEMlowEnergyModel;
+	G4String								 m_hHadronicModel;
+	G4bool									 m_bCerenkov;
+	G4DecayPhysics					*particleList;
+	G4bool									 makePhysicsHistograms;
+	
+	G4String physRootFile;
 };
 
 #endif // 

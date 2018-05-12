@@ -37,8 +37,8 @@ using std::max;
 #include "TFile.h"
 #include "TParameter.h"
 
-#include <math.h>
-#define pi 3.14159265359
+#include <cmath>
+#define pi (acos(-1.0))
 
 map<G4String, G4double> PurdueDetectorConstruction::m_hGeometryParameters;
 
@@ -76,18 +76,12 @@ void PurdueDetectorConstruction::DefineMaterials()
   //---------------------------------Air---------------------------------------
   pNistManager->FindOrBuildMaterial("G4_AIR");
 
-  //--------------------------------Concrete-----------------------------------
-  pNistManager->FindOrBuildMaterial("G4_CONCRETE");
+  //--------------------------------Water-----------------------------------
+  pNistManager->FindOrBuildMaterial("G4_WATER");
 
-  //-------------------------------Aluminium-----------------------------------
-  pNistManager->FindOrBuildMaterial("G4_Al");
+  //-------------------------------Polyetheylene-----------------------------------
+  pNistManager->FindOrBuildMaterial("G4_POLYETHYLENE");
 
-  //-------------------------------Scintillator--------------------------------
-  pNistManager->FindOrBuildMaterial("G4_Pb");
-  G4Material *Scintillator = 
-    new G4Material("Scintillator", 864*kg/m3, 2, kStateLiquid);
-  Scintillator->AddElement(H, atomnumber=1212);
-  Scintillator->AddElement(C, atomnumber=1000); 
 }
 
 void PurdueDetectorConstruction::DefineGeometryParameters()

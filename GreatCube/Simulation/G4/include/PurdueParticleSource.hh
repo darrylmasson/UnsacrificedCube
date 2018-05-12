@@ -31,9 +31,9 @@ public:
 	void SetPosDisShape(G4String hShape) { m_hShape = hShape; }
 	void SetCenterCoords(G4ThreeVector hCenterCoords) { m_hCenterCoords = hCenterCoords; }
 
-  void SetHalfX(G4double dHalfx) { m_dHalfx = dHalfx; }
-  void SetHalfY(G4double dHalfy) { m_dHalfy = dHalfy; }
-  void SetHalfZ(G4double dHalfz) { m_dHalfz = dHalfz; }
+	void SetHalfX(G4double dHalfx) { m_dHalfx = dHalfx; }
+	void SetHalfY(G4double dHalfy) { m_dHalfy = dHalfy; }
+	void SetHalfZ(G4double dHalfz) { m_dHalfz = dHalfz; }
 	void SetRadius(G4double dRadius) { m_dRadius = dRadius; }
 
 	void SetAngDistType(G4String hAngDistType) { m_hAngDistType = hAngDistType; }
@@ -53,7 +53,7 @@ public:
 	const G4ThreeVector &GetParticlePosition() { return m_hParticlePosition; }
 	inline G4ParticleDefinition* GetParticleDefinition(){return m_pParticleDefinition;};
  	inline G4ParticleMomentum GetParticleMomentumDirection(){ return m_hParticleMomentumDirection;};
-  
+	
 	G4bool ReadEnergySpectrum();
 	void GeneratePointSource();
 	void GeneratePointsInVolume();
@@ -93,13 +93,13 @@ private:
 	G4ThreeVector m_hParticlePolarization;
 
 	G4int m_iVerbosityLevel;
-  	TH1D m_hEnergySpectrum;
+		TH1D m_hEnergySpectrum;
 
-  	PurdueParticleSourceMessenger *m_pMessenger;
+		PurdueParticleSourceMessenger *m_pMessenger;
 	G4Navigator *m_pNavigator;
 
-  	G4ParticleTable *m_pParticleTable;
-  
+		G4ParticleTable *m_pParticleTable;
+	
 };
 
 #endif // __XENON10PPARTICLESOURCE_H__
