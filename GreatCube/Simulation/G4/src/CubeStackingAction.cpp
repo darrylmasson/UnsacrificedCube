@@ -1,21 +1,21 @@
 #include <G4VProcess.hh>
 #include <G4StackManager.hh>
 
-#include "PurdueAnalysisManager.hh"
+#include "CubeAnalysisManager.hpp"
 
-#include "PurdueStackingAction.hh"
+#include "CubeStackingAction.hpp"
 
-PurdueStackingAction::PurdueStackingAction(PurdueAnalysisManager *pAnalysisManager)
+CubeStackingAction::CubeStackingAction(CubeAnalysisManager *pAnalysisManager)
 {
 	m_pAnalysisManager = pAnalysisManager;
 }
 
-PurdueStackingAction::~PurdueStackingAction()
+CubeStackingAction::~CubeStackingAction()
 {
 }
 
 G4ClassificationOfNewTrack
-PurdueStackingAction::ClassifyNewTrack(const G4Track *pTrack)
+CubeStackingAction::ClassifyNewTrack(const G4Track *pTrack)
 {
 	G4ClassificationOfNewTrack hTrackClassification = fUrgent;
 
@@ -29,12 +29,12 @@ PurdueStackingAction::ClassifyNewTrack(const G4Track *pTrack)
 }
 
 void
-PurdueStackingAction::NewStage()
+CubeStackingAction::NewStage()
 {
 }
 
 void
-PurdueStackingAction::PrepareNewEvent()
+CubeStackingAction::PrepareNewEvent()
 { 
 }
 

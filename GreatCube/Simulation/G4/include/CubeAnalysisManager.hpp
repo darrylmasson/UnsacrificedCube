@@ -1,7 +1,7 @@
 //To do: clean up include list
 
-#ifndef __XENON10PANALYSISMANAGER_H__
-#define __XENON10PANALYSISMANAGER_H__
+#ifndef __CUBEANALYSISMANAGER_H__
+#define __CUBEANALYSISMANAGER_H__
 
 #include <globals.hh>
 
@@ -17,21 +17,20 @@ class G4Step;
 class TFile;
 class TTree;
 
-class PurdueEventData;
-class PurduePrimaryGeneratorAction;
+class CubeEventData;
+class CubePrimaryGeneratorAction;
 
-class PurdueAnalysisManager
-{
+class CubeAnalysisManager {
 public:
-	PurdueAnalysisManager(PurduePrimaryGeneratorAction *pPrimaryGeneratorAction);
-	virtual ~PurdueAnalysisManager();
+	CubeAnalysisManager(CubePrimaryGeneratorAction *pPrimaryGeneratorAction);
+	virtual ~CubeAnalysisManager();
 
 public:
 	virtual void BeginOfRun(const G4Run *pRun); 
 	virtual void EndOfRun(const G4Run *pRun); 
 	virtual void BeginOfEvent(const G4Event *pEvent); 
 	virtual void EndOfEvent(const G4Event *pEvent); 
-	virtual void Step(const G4Step *pStep);	
+	virtual void Step(const G4Step *pStep);
 	
 	void SetDataFilename(const G4String &hFilename) { m_hDataFilename = hFilename; }
 	void SetNbEventsToSimulate(G4int iNbEventsToSimulate) { m_iNbEventsToSimulate = iNbEventsToSimulate;}
@@ -39,7 +38,7 @@ public:
 	void FillParticleInSave(G4int flag, G4int partPDGcode, G4ThreeVector pos, G4ThreeVector dir, G4float nrg, G4float time, G4int trackID);
 
 private:
-	G4bool FilterEvent(PurdueEventData *pEventData);
+	G4bool FilterEvent(CubeEventData *pEventData);
 
 private:
 	G4int m_iEljenDetectorHitsCollectionID;
@@ -53,14 +52,14 @@ private:
 
 	TParameter<int> *m_pNbEventsToSimulateParameter;
 	
-	PurduePrimaryGeneratorAction *m_pPrimaryGeneratorAction;
+	CubePrimaryGeneratorAction *m_pPrimaryGeneratorAction;
 
-	PurdueEventData *m_pEventData;
+	CubeEventData *m_pEventData;
 	G4bool						plotPhysics;
 
 	G4Timer *runTime;
 	G4bool						writeEmptyEvents;
 };
 
-#endif // __XENON10PANALYSISMANAGER_H__
+#endif // __CUBEANALYSISMANAGER_H__
 

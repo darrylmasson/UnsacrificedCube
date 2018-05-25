@@ -6,8 +6,7 @@
 
 class PurdueAnalysisManager;
 
-class PurdueSteppingAction : public G4UserSteppingAction
-{
+class PurdueSteppingAction : public G4UserSteppingAction {
 public:
 	PurdueSteppingAction(PurdueAnalysisManager* );
 	~PurdueSteppingAction(){};

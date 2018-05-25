@@ -4,22 +4,20 @@
 #include <G4Colour.hh>
 #include <G4VisAttributes.hh>
 
-#include "CubeDetectorHit.hh"
+#include "CubeDetectorHit.hpp"
 
 G4Allocator<CubeDetectorHit> CubeDetectorHitAllocator;
 
 CubeDetectorHit::CubeDetectorHit(){}
 
-CubeDetectorHit::~CubeDetectorHit()
-{
+CubeDetectorHit::~CubeDetectorHit() {
 	if(m_pParticleType) delete m_pParticleType;
 	if(m_pParentType) delete m_pParentType;
 	if(m_pCreatorProcess) delete m_pCreatorProcess;
 	if(m_pDepositingProcess) delete m_pDepositingProcess;
 }
 
-CubeDetectorHit::CubeDetectorHit(const CubeDetectorHit &hCubeDetectorHit):G4VHit()
-{
+CubeDetectorHit::CubeDetectorHit(const CubeDetectorHit &hCubeDetectorHit):G4VHit() {
 	m_iTrackId = hCubeDetectorHit.m_iTrackId;
 	m_iParentId = hCubeDetectorHit.m_iParentId;
 	m_pParticleType = hCubeDetectorHit.m_pParticleType;
@@ -28,39 +26,36 @@ CubeDetectorHit::CubeDetectorHit(const CubeDetectorHit &hCubeDetectorHit):G4VHit
 	m_pDepositingProcess = hCubeDetectorHit.m_pDepositingProcess ;
 	m_hPosition = hCubeDetectorHit.m_hPosition;
 	m_dEnergyDeposited = hCubeDetectorHit.m_dEnergyDeposited;
-	m_dKineticEnergy = hCubeDetectorHit.m_dKineticEnergy ;
-	m_dPreStepEnergy = hCubeDetectorHit.m_dPreStepEnergy ;
-	m_dPostStepEnergy = hCubeDetectorHit.m_dPostStepEnergy ;
+	m_dKineticEnergy = hCubeDetectorHit.m_dKineticEnergy;
+	m_dPreStepEnergy = hCubeDetectorHit.m_dPreStepEnergy;
+	m_dPostStepEnergy = hCubeDetectorHit.m_dPostStepEnergy;
 	m_dTime = hCubeDetectorHit.m_dTime;
 }
 
 const CubeDetectorHit &
-CubeDetectorHit::operator=(const CubeDetectorHit &hCubeDetectorHit)
-{
+CubeDetectorHit::operator=(const CubeDetectorHit &hCubeDetectorHit) {
 	m_iTrackId = hCubeDetectorHit.m_iTrackId;
 	m_iParentId = hCubeDetectorHit.m_iParentId;
 	m_pParticleType = hCubeDetectorHit.m_pParticleType;
-	m_pParentType = hCubeDetectorHit.m_pParentType ;
-	m_pCreatorProcess = hCubeDetectorHit.m_pCreatorProcess ;
-	m_pDepositingProcess = hCubeDetectorHit.m_pDepositingProcess ;
+	m_pParentType = hCubeDetectorHit.m_pParentType;
+	m_pCreatorProcess = hCubeDetectorHit.m_pCreatorProcess;
+	m_pDepositingProcess = hCubeDetectorHit.m_pDepositingProcess;
 	m_hPosition = hCubeDetectorHit.m_hPosition;
 	m_dEnergyDeposited = hCubeDetectorHit.m_dEnergyDeposited;
-	m_dKineticEnergy = hCubeDetectorHit.m_dKineticEnergy ;
-	m_dPreStepEnergy = hCubeDetectorHit.m_dPreStepEnergy ;
-	m_dPostStepEnergy = hCubeDetectorHit.m_dPostStepEnergy ;
+	m_dKineticEnergy = hCubeDetectorHit.m_dKineticEnergy;
+	m_dPreStepEnergy = hCubeDetectorHit.m_dPreStepEnergy;
+	m_dPostStepEnergy = hCubeDetectorHit.m_dPostStepEnergy;
 	m_dTime = hCubeDetectorHit.m_dTime;
 	
 	return *this;
 }
 
 G4int
-CubeDetectorHit::operator==(const CubeDetectorHit &hCubeDetectorHit) const
-{
+CubeDetectorHit::operator==(const CubeDetectorHit &hCubeDetectorHit) const {
 	return ((this == &hCubeDetectorHit) ? (1) : (0));
 }
 
-void CubeDetectorHit::Draw()
-{
+void CubeDetectorHit::Draw() {
 	G4VVisManager* pVVisManager = G4VVisManager::GetConcreteInstance();
 	
 	if(pVVisManager)
@@ -76,9 +71,8 @@ void CubeDetectorHit::Draw()
 	}
 }
 
-void CubeDetectorHit::Print()
-{
-	G4cout << "-------------------- EljenDetectorHit --------------------" 
+void CubeDetectorHit::Print() {
+	G4cout << "-------------------- PanelHit --------------------" 
 		<< "Id: " << m_iTrackId
 		<< " Particle: " << *m_pParticleType
 		<< " ParentId: " << m_iParentId

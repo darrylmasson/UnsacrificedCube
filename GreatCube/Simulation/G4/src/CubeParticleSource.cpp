@@ -19,16 +19,15 @@
 using std::stringstream;
 using std::vector;
 
-#include "PurdueParticleSource.hh"
+#include "CubeParticleSource.hpp"
 
-PurdueParticleSource::PurdueParticleSource()
-{
+CubeParticleSource::CubeParticleSource() {
 	m_iNumberOfParticlesToBeGenerated = 1;
 	m_pParticleDefinition = 0;
 	G4ThreeVector hZero(0., 0., 0.);
 
-	m_hParticleMomentumDirection = G4ParticleMomentum(1., 0., 0.);
-	m_dParticleEnergy = 1.0*MeV;
+	m_hParticleMomentumDirection = G4ParticleMomentum(0., 0., 1.);
+	m_dParticleEnergy = 1.0*GeV;
 	m_hParticlePosition = hZero;
 	m_dParticleTime = 0.0;
 	m_hParticlePolarization = hZero;
@@ -56,33 +55,25 @@ PurdueParticleSource::PurdueParticleSource()
 
 	m_iVerbosityLevel = 0;
 
-	m_pMessenger = new PurdueParticleSourceMessenger(this);
 	m_pNavigator = G4TransportationManager::GetTransportationManager()->GetNavigatorForTracking();
 }
 
 
-PurdueParticleSource::~PurdueParticleSource()
-{
-  delete m_pMessenger;
+CubeParticleSource::~CubeParticleSource() {
 }
 
-void
-PurdueParticleSource::SetParticleDefinition(G4ParticleDefinition * aParticleDefinition)
-{
+void CubeParticleSource::SetParticleDefinition(G4ParticleDefinition * aParticleDefinition) {
   m_pParticleDefinition = aParticleDefinition;
   m_dParticleCharge = m_pParticleDefinition->GetPDGCharge();
 }
 
-void
-PurdueParticleSource::ConfineSourceToVolume(G4String hVolumeList)
-{
+void CubeParticleSource::ConfineSourceToVolume(G4String hVolumeList) {
 	stringstream hStream;
 	hStream.str(hVolumeList);
 	G4String hVolumeName;
 
 	// store all the volume names
-	while(!hStream.eof())
-	{
+	while(!hStream.eof()) {
 		hStream >> hVolumeName;
 		m_hVolumeNames.insert(hVolumeName);
 	}
@@ -92,8 +83,7 @@ PurdueParticleSource::ConfineSourceToVolume(G4String hVolumeList)
 	G4bool bFoundAll = true;
 
 	set<G4String> hActualVolumeNames;
-	for(set<G4String>::iterator pIt = m_hVolumeNames.begin(); pIt != m_hVolumeNames.end(); pIt++)
-	{
+	for(set<G4String>::iterator pIt = m_hVolumeNames.begin(); pIt != m_hVolumeNames.end(); pIt++) {
 		G4String hRequiredVolumeName = *pIt;
 		G4bool bMatch = false;
 
@@ -101,12 +91,10 @@ PurdueParticleSource::ConfineSourceToVolume(G4String hVolumeList)
 			hRequiredVolumeName = hRequiredVolumeName.strip(G4String::trailing, '*');
 
 		G4bool bFoundOne = false;
-		for(G4int iIndex = 0; iIndex < (G4int) PVStore->size(); iIndex++)
-		{
+		for(G4int iIndex = 0; iIndex < (G4int) PVStore->size(); iIndex++) {
 			G4String hName = (*PVStore)[iIndex]->GetName();
 
-			if((bMatch && (hName.substr(0, hRequiredVolumeName.size())) == hRequiredVolumeName) || hName == hRequiredVolumeName)
-			{
+			if((bMatch && (hName.substr(0, hRequiredVolumeName.size())) == hRequiredVolumeName) || hName == hRequiredVolumeName) {
 				hActualVolumeNames.insert(hName);
 				bFoundOne = true;
 			}
@@ -115,16 +103,14 @@ PurdueParticleSource::ConfineSourceToVolume(G4String hVolumeList)
 		bFoundAll = bFoundAll && bFoundOne;
 	}
 
-	if(bFoundAll)
-	{
+	if(bFoundAll) {
 		m_hVolumeNames = hActualVolumeNames;
 		m_bConfine = true;
 
 		if(m_iVerbosityLevel >= 1)
 			G4cout << "Source confined to volumes: " << hVolumeList << G4endl;
 
-		if(m_iVerbosityLevel >= 2)
-		{
+		if(m_iVerbosityLevel >= 2) {
 			G4cout << "Volume list: " << G4endl;
 
 			for(set<G4String>::iterator pIt = m_hVolumeNames.begin(); pIt != m_hVolumeNames.end(); pIt++)
@@ -133,8 +119,7 @@ PurdueParticleSource::ConfineSourceToVolume(G4String hVolumeList)
 	}
 	else if(m_hVolumeNames.empty())
 		m_bConfine = false;
-	else
-	{
+	else {
 		G4cout << " **** Error: One or more volumes do not exist **** " << G4endl;
 		G4cout << " Ignoring confine condition" << G4endl;
 		m_hVolumeNames.clear();
@@ -142,9 +127,7 @@ PurdueParticleSource::ConfineSourceToVolume(G4String hVolumeList)
 	}
 }
 
-void
-PurdueParticleSource::GeneratePointSource()
-{
+void CubeParticleSource::GeneratePointSource() {
 	// Generates Points given the point source.
 	if(m_hSourcePosType == "Point")
 		m_hParticlePosition = m_hCenterCoords;
@@ -153,76 +136,14 @@ PurdueParticleSource::GeneratePointSource()
 }
 
 void
-PurdueParticleSource::GeneratePointsInVolume()
-{
-	G4ThreeVector RandPos;
-	G4double x = 0., y = 0., z = 0.;
-
-	if(m_hSourcePosType != "Volume" && m_iVerbosityLevel >= 1)
-		G4cout << "Error SourcePosType not Volume" << G4endl;
-
-	if(m_hShape == "Sphere")
-	{
-		x = m_dRadius * 2.;
-		y = m_dRadius * 2.;
-		z = m_dRadius * 2.;
-		while(((x * x) + (y * y) + (z * z)) > (m_dRadius * m_dRadius))
-		{
-			x = G4UniformRand();
-			y = G4UniformRand();
-			z = G4UniformRand();
-
-			x = (x * 2. * m_dRadius) - m_dRadius;
-			y = (y * 2. * m_dRadius) - m_dRadius;
-			z = (z * 2. * m_dRadius) - m_dRadius;
-		}
-	}
-
-	else if(m_hShape == "Cylinder")
-	{
-		x = m_dRadius * 2.;
-		y = m_dRadius * 2.;
-		while(((x * x) + (y * y)) > (m_dRadius * m_dRadius))
-		{
-			x = G4UniformRand();
-			y = G4UniformRand();
-			z = G4UniformRand();
-			x = (x * 2. * m_dRadius) - m_dRadius;
-			y = (y * 2. * m_dRadius) - m_dRadius;
-			z = (z * 2. * m_dHalfz) - m_dHalfz;
-		}
-	}
-
-	else if(m_hShape == "Box")
-	{
-
-	  x = 2*(G4UniformRand()-0.5)*m_dHalfx;
-	  y = 2*(G4UniformRand()-0.5)*m_dHalfy;
-	  z = 2*(G4UniformRand()-0.5)*m_dHalfz;
-			
-	}
-
-	else
-		G4cout << "Error: Volume Shape Does Not Exist" << G4endl;
-
-	RandPos.setX(x);
-	RandPos.setY(y);
-	RandPos.setZ(z);
-	m_hParticlePosition = m_hCenterCoords + RandPos;
-
-}
-
-void
-PurdueParticleSource::GeneratePointsInSurface()
-{
+CubeParticleSource::GeneratePointsInSurface() {
   G4ThreeVector RandPos;
   G4double x = 0., y = 0., z = 0.;
   
   if(m_hSourcePosType != "Surface" && m_iVerbosityLevel >= 1)
     G4cout << "Error SourcePosType not Surface" << G4endl;
   
-  if(m_hShape == "Sphere")
-    {
+  if(m_hShape == "Sphere") {
       
       G4double costh =  G4UniformRand()*2. - 1.;
       G4double sinth =  sqrt(1-costh*costh);
@@ -234,8 +155,7 @@ PurdueParticleSource::GeneratePointsInSurface()
       
     }
   
-  else if(m_hShape == "Cylinder")
-    {      
+  else if(m_hShape == "Cylinder") {      
       //compute areas
       G4double BaseArea = pi * m_dRadius * m_dRadius;
       G4double LateralArea = twopi * m_dRadius * 2*m_dHalfz;
@@ -262,8 +182,7 @@ PurdueParticleSource::GeneratePointsInSurface()
       }
 
     }
-  else if(m_hShape == "Box")
-    {
+  else if(m_hShape == "Box") {
       
       G4double SurfXY =  m_dHalfx * m_dHalfy;
       G4double SurfXZ =  m_dHalfx * m_dHalfz;
@@ -313,8 +232,7 @@ PurdueParticleSource::GeneratePointsInSurface()
 
 
 G4bool
-PurdueParticleSource::IsSourceConfined()
-{
+CubeParticleSource::IsSourceConfined() {
 	// Method to check point is within the volume specified
 	if(m_bConfine == false)
 		G4cout << "Error: Confine is false" << G4endl;
@@ -330,8 +248,7 @@ PurdueParticleSource::IsSourceConfined()
 	G4String theVolName = theVolume->GetName();
 
 	set<G4String>::iterator pIt;
-	if((pIt = m_hVolumeNames.find(theVolName)) != m_hVolumeNames.end())
-	{
+	if((pIt = m_hVolumeNames.find(theVolName)) != m_hVolumeNames.end()) {
 		if(m_iVerbosityLevel >= 1)
 			G4cout << "Particle is in volume " << *pIt << G4endl;
 		return (true);
@@ -341,8 +258,7 @@ PurdueParticleSource::IsSourceConfined()
 }
 
 void
-PurdueParticleSource::GenerateIsotropicFlux()
-{
+CubeParticleSource::GenerateIsotropicFlux() {
 	G4double rndm, rndm2;
 	G4double px, py, pz;
 
@@ -378,18 +294,15 @@ PurdueParticleSource::GenerateIsotropicFlux()
 }
 
 void
-PurdueParticleSource::GenerateMonoEnergetic()
-{
+CubeParticleSource::GenerateMonoEnergetic() {
 	m_dParticleEnergy = m_dMonoEnergy;
 }
 
 
 void
-PurdueParticleSource::GeneratePrimaryVertex(G4Event * evt)
-{
+CubeParticleSource::GeneratePrimaryVertex(G4Event * evt) {
 
-	if(m_pParticleDefinition == 0)
-	{
+	if(m_pParticleDefinition == 0) {
 		G4cout << "No particle has been defined!" << G4endl;
 		return;
 	}
@@ -398,8 +311,7 @@ PurdueParticleSource::GeneratePrimaryVertex(G4Event * evt)
 	G4bool srcconf = false;
 	G4int LoopCount = 0;
 
-	while(srcconf == false)
-	{
+	while(srcconf == false) {
 		if(m_hSourcePosType == "Point")
 			GeneratePointSource();
 		else if(m_hSourcePosType == "Volume")
@@ -413,8 +325,7 @@ PurdueParticleSource::GeneratePrimaryVertex(G4Event * evt)
 			GeneratePointSource();
 		}
 
-		if(m_bConfine == true)
-		{
+		if(m_bConfine == true) {
 			srcconf = IsSourceConfined();
 			// if source in confined srcconf = true terminating the loop
 			// if source isnt confined srcconf = false and loop continues
@@ -423,8 +334,7 @@ PurdueParticleSource::GeneratePrimaryVertex(G4Event * evt)
 			srcconf = true;		// terminate loop
 
 		LoopCount++;
-		if(LoopCount == 1000000)
-		{
+		if(LoopCount == 1000000) {
 			G4cout << "*************************************" << G4endl;
 			G4cout << "LoopCount = 1000000" << G4endl;
 			G4cout << "Either the source distribution >> confinement" << G4endl;
@@ -466,8 +376,7 @@ PurdueParticleSource::GeneratePrimaryVertex(G4Event * evt)
 	G4double py = pmom * m_hParticleMomentumDirection.y();
 	G4double pz = pmom * m_hParticleMomentumDirection.z();
 
-	if(m_iVerbosityLevel >= 1)
-	{
+	if(m_iVerbosityLevel >= 1) {
 		G4cout << "Particle name: " << m_pParticleDefinition->GetParticleName() << G4endl;
 		G4cout << "       Energy: " << m_dParticleEnergy << G4endl;
 		G4cout << "     Position: " << m_hParticlePosition << G4endl;
@@ -475,8 +384,7 @@ PurdueParticleSource::GeneratePrimaryVertex(G4Event * evt)
 		G4cout << " NumberOfParticlesToBeGenerated: " << m_iNumberOfParticlesToBeGenerated << G4endl;
 	}
 
-	for(G4int i = 0; i < m_iNumberOfParticlesToBeGenerated; i++)
-	{
+	for(G4int i = 0; i < m_iNumberOfParticlesToBeGenerated; i++) {
 		G4PrimaryParticle *particle = new G4PrimaryParticle(m_pParticleDefinition, px, py, pz);
 		particle->SetMass(mass);
 		particle->SetCharge(m_dParticleCharge);
@@ -489,8 +397,7 @@ PurdueParticleSource::GeneratePrimaryVertex(G4Event * evt)
 }
 
 void
-PurdueParticleSource::GeneratePrimaryVertexFromTrack(G4Track *pTrack, G4Event *pEvent)
-{
+CubeParticleSource::GeneratePrimaryVertexFromTrack(G4Track *pTrack, G4Event *pEvent) {
 	G4double dPX = pTrack->GetMomentum().x();
 	G4double dPY = pTrack->GetMomentum().y();
 	G4double dPZ = pTrack->GetMomentum().z();
@@ -507,21 +414,18 @@ PurdueParticleSource::GeneratePrimaryVertexFromTrack(G4Track *pTrack, G4Event *p
 }
 
 void
-PurdueParticleSource::SetEnergyFile(G4String hEnergyFile)
-{
+CubeParticleSource::SetEnergyFile(G4String hEnergyFile) {
 	m_hEnergyFile = hEnergyFile;
 
 	ReadEnergySpectrum();
 }
 
 G4bool
-PurdueParticleSource::ReadEnergySpectrum()
-{
+CubeParticleSource::ReadEnergySpectrum() {
 	// read the energy spectrum from the file
 	ifstream hIn(m_hEnergyFile.c_str());
 
-	if(hIn.fail())
-	{
+	if(hIn.fail()) {
 		G4cout << "Error: cannot open energy spectrum file " << m_hEnergyFile << "!" << G4endl;
 		return false;
 	}
@@ -531,8 +435,7 @@ PurdueParticleSource::ReadEnergySpectrum()
 
 	// read the header
 	G4String hEnergyUnit;
-	while(!hIn.eof())
-	{
+	while(!hIn.eof()) {
 		G4String hHeader;
 		hIn >> hHeader;
 
@@ -562,14 +465,12 @@ PurdueParticleSource::ReadEnergySpectrum()
 	vector<G4double> hBinWidths;
 	G4double dBinEnergy_old= 0.;
 
-	while(!hIn.eof())
-	{
+	while(!hIn.eof()) {
 		G4double dBinEnergy = 0., dProbability = 0., dBinWidth = 0.;
 
 		hIn >> dBinEnergy >> dProbability;
 
-		if(hIn.good())
-		{
+		if(hIn.good()) {
 			if(m_iVerbosityLevel >= 2)
 				G4cout << std::setprecision(3) << std::scientific << dBinEnergy << "  " << dProbability << G4endl;
 			
@@ -601,8 +502,7 @@ PurdueParticleSource::ReadEnergySpectrum()
 }
 
 void
-PurdueParticleSource::GenerateEnergyFromSpectrum()
-{
+CubeParticleSource::GenerateEnergyFromSpectrum() {
 	m_dParticleEnergy = m_hEnergySpectrum.GetRandom()*MeV;
 }
 

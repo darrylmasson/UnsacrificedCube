@@ -1,5 +1,5 @@
-#ifndef __PURDUEPARTICLESOURCE_H__
-#define __PURDUEPARTICLESOURCE_H__
+#ifndef __CUBEPARTICLESOURCE_H__
+#define __CUBEPARTICLESOURCE_H__
 
 #include <G4VPrimaryGenerator.hh>
 #include <G4GeneralParticleSource.hh>
@@ -15,13 +15,13 @@ class G4ParticleTable;
 
 using std::set;
 
-#include "PurdueParticleSourceMessenger.hh"
+#include "CubeParticleSourceMessenger.hh"
 
-class PurdueParticleSource: public G4VPrimaryGenerator 
+class CubeParticleSource: public G4VPrimaryGenerator 
 {
 public:
-	PurdueParticleSource();
-	~PurdueParticleSource();
+	CubeParticleSource();
+	~CubeParticleSource();
 
 public:
 	void GeneratePrimaryVertex(G4Event *pEvent);
@@ -95,7 +95,7 @@ private:
 	G4int m_iVerbosityLevel;
 		TH1D m_hEnergySpectrum;
 
-		PurdueParticleSourceMessenger *m_pMessenger;
+		CubeParticleSourceMessenger *m_pMessenger;
 	G4Navigator *m_pNavigator;
 
 		G4ParticleTable *m_pParticleTable;

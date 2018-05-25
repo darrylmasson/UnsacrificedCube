@@ -8,8 +8,7 @@
 class G4Step;
 class G4HCofThisEvent;
 
-class CubeSensitiveDetector: public G4VSensitiveDetector
-{
+class CubeSensitiveDetector: public G4VSensitiveDetector {
 public:
 	CubeSensitiveDetector(G4String hName);
 	~CubeSensitiveDetector();
@@ -19,8 +18,8 @@ public:
 	void EndOfEvent(G4HCofThisEvent *pHitsCollectionOfThisEvent);
 
 private:
-	CubeDetectorHitsCollection* m_pCubeDetectorHitsCollection;
-				std::map<int,G4String> m_hParticleTypes;
+	CubeDetectorHitsCollection* m_pEljenDetectorHitsCollection;
+    std::map<int,G4String> m_hParticleTypes;
 };
 
 #endif 

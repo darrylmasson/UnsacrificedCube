@@ -1,17 +1,15 @@
-#include "PurdueSteppingAction.hh"
-#include "PurdueAnalysisManager.hh"
+#include "CubeSteppingAction.hpp"
+#include "CubeAnalysisManager.hpp"
 
-#include "G4SteppingManager.hh"
+#include "G4SteppingManager.hpp"
 
 #include <string.h>
 #include <cmath>
 
-PurdueSteppingAction::PurdueSteppingAction(PurdueAnalysisManager *myAM):myAnalysisManager(myAM)
-{
+CubeSteppingAction::CubeSteppingAction(CubeAnalysisManager *myAM) : myAnalysisManager(myAM) {
 }
 
-void PurdueSteppingAction::UserSteppingAction(const G4Step* aStep)
-{
+void CubeSteppingAction::UserSteppingAction(const G4Step* aStep) {
     G4int  trackID = aStep->GetTrack()->GetTrackID();
     particle = aStep->GetTrack()->GetDefinition()->GetParticleName();
     G4int particlePDGcode = aStep->GetTrack()->GetDefinition()->GetPDGEncoding();

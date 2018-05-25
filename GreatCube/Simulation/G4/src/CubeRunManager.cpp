@@ -2,26 +2,26 @@
 
 #include <sys/time.h>
 
-#include "PurdueAnalysisManager.hh"
+#include "CubeAnalysisManager.hpp"
 
-#include "PurdueRunAction.hh"
+#include "CubeRunAction.hpp"
 
-PurdueRunAction::PurdueRunAction(PurdueAnalysisManager *pAnalysisManager)
+CubeRunAction::CubeRunAction(CubeAnalysisManager *pAnalysisManager)
 {
   m_hRanSeed         = 0; //12345; // default value
-  //m_pMessenger       = new PurdueRunActionMessenger(this);
+  //m_pMessenger       = new CubeRunActionMessenger(this);
   
   m_pAnalysisManager = pAnalysisManager;
   
 }
 
-PurdueRunAction::~PurdueRunAction()
+CubeRunAction::~CubeRunAction()
 {
   //delete m_pMessenger;
 }
 
 void
-PurdueRunAction::BeginOfRunAction(const G4Run *pRun)
+CubeRunAction::BeginOfRunAction(const G4Run *pRun)
 {
   if(m_pAnalysisManager) {
     m_pAnalysisManager->BeginOfRun(pRun);
@@ -30,19 +30,19 @@ PurdueRunAction::BeginOfRunAction(const G4Run *pRun)
   // random seeding of the MC
   if(m_hRanSeed > 0){
     CLHEP::HepRandom::setTheEngine(new CLHEP::RanecuEngine);
-    G4cout << "PurdueRunAction::BeginOfRunAction Initialize random numbers with seed = "<<m_hRanSeed<<G4endl;
+    G4cout << "CubeRunAction::BeginOfRunAction Initialize random numbers with seed = "<<m_hRanSeed<<G4endl;
     CLHEP::HepRandom::setTheSeed(m_hRanSeed);
   } else {
     // initialize with time.....
     struct timeval hTimeValue;
     gettimeofday(&hTimeValue, NULL);
-    G4cout << "PurdueRunAction::BeginOfRunAction Initialize random numbers with seed = "<<hTimeValue.tv_usec<<G4endl;
+    G4cout << "CubeRunAction::BeginOfRunAction Initialize random numbers with seed = "<<hTimeValue.tv_usec<<G4endl;
     CLHEP::HepRandom::setTheSeed(hTimeValue.tv_usec);
   }
 }
 
 void
-PurdueRunAction::EndOfRunAction(const G4Run *pRun)
+CubeRunAction::EndOfRunAction(const G4Run *pRun)
 {
   if(m_pAnalysisManager)
     m_pAnalysisManager->EndOfRun(pRun);

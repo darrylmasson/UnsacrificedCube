@@ -1,5 +1,5 @@
-#ifndef __PURUEPHYSICSLIST_H__
-#define __PURDUEPHYSICSLIST_H__
+#ifndef __CUBEPHYSICSLIST_H__
+#define __CUBEPHYSICSLIST_H__
 
 #include <G4VUserPhysicsList.hh>
 #include <globals.hh>
@@ -19,8 +19,7 @@
 
 class G4VPhysicsConstructor;
 
-class PurduePhysicsList: public G4VUserPhysicsList
-{
+class PurduePhysicsList: public G4VUserPhysicsList {
 public:
 	PurduePhysicsList(G4String fName);
 	~PurduePhysicsList();
@@ -67,11 +66,11 @@ private:
 	G4int VerboseLevel;
 	G4int OpVerbLevel;
 	
-	G4VPhysicsConstructor*							 emPhysicsList;
-	G4VPhysicsConstructor*							 opPhysicsList;
+	G4VPhysicsConstructor* emPhysicsList;
+	G4VPhysicsConstructor* opPhysicsList;
 	std::vector<G4VPhysicsConstructor*>	hadronPhys;
 
-	//	G4String								 emName;
+	//	G4Strin gemName;
 	
 	// PurduePhysicsListMessenger *m_pMessenger;
 	G4String								 m_hEMlowEnergyModel;

@@ -17,16 +17,11 @@
 #include <G4Vector3D.hh>
 #include <G4SingleParticleSource.hh>
 
-#include "PurdueParticleSource.hh"
-#include "PurduePrimaryGeneratorAction.hh"
-//#include "PurduePrimaryGeneratorMessenger.hh"
+#include "CubeParticleSource.hpp"
+#include "CubePrimaryGeneratorAction.hpp"
 
-PurduePrimaryGeneratorAction::PurduePrimaryGeneratorAction(G4String fName)
-{
-  //m_pMessenger       = new PurduePrimaryGeneratorMessenger(this);
-
-  G4cout <<"PurduePrimaryGeneratorAction::PurduePrimaryGeneratorAction() Use PurdueParticleSource "<<G4endl;
-  m_pParticleSource = new PurdueParticleSource();
+CubePrimaryGeneratorAction::CubePrimaryGeneratorAction(G4String fName) {
+  m_pParticleSource = new CubeParticleSource();
   
   particleTable = G4ParticleTable::GetParticleTable();
   
@@ -37,8 +32,8 @@ PurduePrimaryGeneratorAction::PurduePrimaryGeneratorAction(G4String fName)
   m_lSeeds[0] = -1;
   m_lSeeds[1] = -1;
   
-  //G4cout <<"PurduePrimaryGeneratorAction:: MC with variance reduction = "<<VarianceReduction<<G4endl;
-  //G4cout <<"PurduePrimaryGeneratorAction::               survival cut = "<<p_survive_cut<<G4endl;
+  //G4cout <<"CubePrimaryGeneratorAction:: MC with variance reduction = "<<VarianceReduction<<G4endl;
+  //G4cout <<"CubePrimaryGeneratorAction::               survival cut = "<<p_survive_cut<<G4endl;
   // for use with ForcedTransport of gammas
   particleGun  = new G4ParticleGun();
   
@@ -72,8 +67,7 @@ PurduePrimaryGeneratorAction::PurduePrimaryGeneratorAction(G4String fName)
   
 }
 
-PurduePrimaryGeneratorAction::~PurduePrimaryGeneratorAction()
-{
+CubePrimaryGeneratorAction::~CubePrimaryGeneratorAction() {
   
   _f_prim->cd();
   _generator->cd();
@@ -103,9 +97,7 @@ PurduePrimaryGeneratorAction::~PurduePrimaryGeneratorAction()
   delete m_pParticleSource;
 }
 
-void 
-PurduePrimaryGeneratorAction::GeneratePrimaries(G4Event *pEvent)
-{
+void CubePrimaryGeneratorAction::GeneratePrimaries(G4Event *pEvent) {
   // generate a single particle 
   m_lSeeds[0] = *(CLHEP::HepRandom::getTheSeeds());
   m_lSeeds[1] = *(CLHEP::HepRandom::getTheSeeds()+1);
@@ -113,14 +105,11 @@ PurduePrimaryGeneratorAction::GeneratePrimaries(G4Event *pEvent)
   // PB 06/05/2012 - Start
   G4StackManager *pStackManager = (G4RunManagerKernel::GetRunManagerKernel())->GetStackManager(); // pb added
 
-  if(!pStackManager->GetNPostponedTrack())
-    {
+  if(!pStackManager->GetNPostponedTrack()) {
       m_pParticleSource->GeneratePrimaryVertex(pEvent);
       // particle name of primary
       m_hParticleTypeOfPrimary = m_pParticleSource->GetParticleDefinition()->GetParticleName();
-    }
-  else
-    {
+    } else {
       pStackManager->TransferStackedTracks(fPostpone, fUrgent);
       G4VTrajectory* pTrajectory;
       G4Track *pTrack = pStackManager->PopNextTrack(&pTrajectory);
@@ -148,8 +137,7 @@ PurduePrimaryGeneratorAction::GeneratePrimaries(G4Event *pEvent)
 }
 
 
-void 
-PurduePrimaryGeneratorAction::FillHistograms(){
+void CubePrimaryGeneratorAction::FillHistograms() {
   
   _energy_accept->Fill(m_dEnergyOfPrimary);
   _cost_accept->Fill(m_hDirectionOfPrimary.z());

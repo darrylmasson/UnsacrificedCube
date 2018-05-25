@@ -15,11 +15,11 @@
 #include <fstream>
 #include <iomanip>
 
-#include "PurdueParticleSource.hh"
+#include "CubeParticleSource.hpp"
 
-#include "PurdueParticleSourceMessenger.hh"
+#include "CubeParticleSourceMessenger.hpp"
 
-PurdueParticleSourceMessenger::PurdueParticleSourceMessenger(PurdueParticleSource *pParticleSource):
+CubeParticleSourceMessenger::CubeParticleSourceMessenger(CubeParticleSource *pParticleSource):
 	m_pParticleSource(pParticleSource), m_bShootIon(false)
 {
 	m_pParticleTable = G4ParticleTable::GetParticleTable();
@@ -188,7 +188,7 @@ PurdueParticleSourceMessenger::PurdueParticleSourceMessenger(PurdueParticleSourc
 	m_pVerbosityCmd->SetRange("level>=0 && level <=2");
 }
 
-PurdueParticleSourceMessenger::~PurdueParticleSourceMessenger()
+CubeParticleSourceMessenger::~CubeParticleSourceMessenger()
 {
 	delete m_pTypeCmd;
 	delete m_pShapeCmd;
@@ -213,7 +213,7 @@ PurdueParticleSourceMessenger::~PurdueParticleSourceMessenger()
 }
 
 void
-PurdueParticleSourceMessenger::SetNewValue(G4UIcommand * command, G4String newValues)
+CubeParticleSourceMessenger::SetNewValue(G4UIcommand * command, G4String newValues)
 {
 	if(command == m_pTypeCmd)
 		m_pParticleSource->SetPosDisType(newValues);
