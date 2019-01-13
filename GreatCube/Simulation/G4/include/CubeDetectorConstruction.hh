@@ -14,8 +14,9 @@
 #include <memory>
 
 class G4VPhysicalVolume;
-class G4VLogicalVolume;
-class G4VMaterial;
+class G4LogicalVolume;
+class G4Box;
+class G4Orb;
 
 class CubeDetectorMessenger;
 
@@ -30,12 +31,40 @@ class CubeDetectorConstruction : public G4VUserDetectorConstruction {
         virtual G4VPhysicalVolume* Construct();
         virtual void ConstructSDandField();
 
+        void SetPanelThickness(G4double thick)  {m_dPanelThick = thick;};
+        void SetPanelSize(G4double size)        {m_dPanelEdge = size;};
+        void SetTiling(G4int num)               {m_iTileCount = num;};
+
+        G4int GetPanelCount()                    {return m_iPanelCount;};
+
     private:
+        enum {
+            _x = 0,
+            _y,
+            _z};
         void DefineMaterials();
         G4VPhysicalVolume* DefineVolumes();
 
         unique_ptr<CubeDetectorMessenger> m_pMessenger;
-        m_bCheckOverlap;
+
+        G4Orb*                  m_pWorldSolid;
+        G4LogicalVolume*        m_pWorldLV;
+        G4VPhysicalVolume*      m_pWorldPV;
+
+        G4Box*              m_pWaterSolid;
+        G4LogicalVolume*    m_pWaterLV;
+        G4VPhysicalVolume*  m_pWaterPV;
+
+        G4Box*                          m_pPanelSolid;
+        G4LogicalVolume*                m_pPanelLV;
+        vector<G4VPhysicalVolume*>      m_vPanelPVs;
+
+        G4double m_dPanelEdge;
+        G4double m_dPanelThick;
+        G4int m_iTileCount;
+        G4int m_iPanelCount;
+        G4double m_dWorldRadius;
+        G4double m_dCubeFullEdge;
 };
 
 #endif // _CUBE_DETECTOR_CONSTRUCTION_H_

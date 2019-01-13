@@ -23,6 +23,8 @@ class CubePrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction {
 
     private:
         std::unique_ptr<G4ParticleGun> m_pParticleGun;
+        G4double m_dWorldSize;
+        G4double m_dCubeSize;
 };
 
 #endif // _CUBE_PRIMARY_GENERATOR_ACTION_H_

@@ -5,6 +5,7 @@
 // please not to sacrifice the great cube
 
 #include "CubePanelSD.hh"
+#include "CubeHit.hh"
 
 #include "G4HCofThisEvent.hh"
 #include "G4Step.hh"
@@ -12,9 +13,9 @@
 #include "G4SDManager.hh"
 #include "G4ios.hh"
 
-CubePanelSD::CubePanelSD(const G4String& name, const G4String& hitCollectionName) : G4VSensitiveDetector(name) {
+CubePanelSD::CubePanelSD(const G4String& name, const G4String& hitsCollectionName) : G4VSensitiveDetector(name) {
     m_pHitCollection = nullptr;
-    collectionName.insert(hitCollectionName);
+    collectionName.insert(hitsCollectionName);
 }
 
 CubePanelSD::~CubePanelSD() {}
@@ -23,8 +24,6 @@ void CubePanelSD::Initialze(G4HCofThisEvent* hce) {
     m_pHitCollection = new CubeHitsCollection(SensitiveDetectorName, collectionName[0]);
     auto hcID = G4SDManager::GetSDMpointer()->GetCollectionID(collectionName[0]);
     hce->AddHitsCollection(hcID, m_pHitCollection);
-
-    m_pHitCollection->insert(new CubeHit());
 }
 
 G4bool CubePanelSD::ProcessHits(G4Step* step, G4TouchableHistory*) {
@@ -34,10 +33,11 @@ G4bool CubePanelSD::ProcessHits(G4Step* step, G4TouchableHistory*) {
     if (edep == 0.) return false;
 
     CubeHit* hit = new CubeHit();
-    hit->SetTrackID(step->GetTrack()->GetTrackIT());
-    hit->SetPanelNb(step->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber());
+    auto prestep = step->GetPreStepPoint();
+    auto poststep = step->GetPostStepPoint();
+    hit->SetPanelNb(prestep->GetTouchableHandle()->GetCopyNumber());
     hit->SetEdep(edep);
-    hit->SetPos(step->GetPostStepPoint()->GetPosition());
+    hit->SetPos(0.5*(prestep->GetPosition() + prestep->GetPosition()));
 
     m_pHitCollection->insert(hit);
 

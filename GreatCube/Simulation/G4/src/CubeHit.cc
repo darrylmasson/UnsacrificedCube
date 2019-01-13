@@ -16,14 +16,12 @@ G4ThreadLocal G4Allocator<CubeHit>* CubeHitAllocator = 0;
 
 CubeHit::CubeHit() : G4VHit() {
     m_Edep = 0.;
-    m_TrackID = -1;
-    m_PanelNB = -1;
+    m_PanelNb = -1;
     m_Pos = G4ThreeVector();
 }
 
 CubeHit::CubeHit(const CubeHit& other) : G4VHit() {
     m_Edep = other.m_Edep;
-    m_TrackID = other.m_TrackID;
     m_PanelNB = other.m_PanelNB;
     m_Pos = other.m_Pos;
 }
@@ -32,7 +30,6 @@ CubeHit::~CubeHit() {}
 
 const CubeHit& CubeHit::operator=(const CubeHit& rhs) {
     m_Edep = rhs.m_Edep;
-    m_TrackID = rhs.m_TrackID;
     m_PanelNB = rhs.m_PanelNB;
     m_Pos = other.m_Pos;
 
@@ -55,7 +52,7 @@ void CubeHit::Draw() {
 }
 
 void CubeHit::Print() {
-    G4cout << " trackID " << m_TrackID << " panelNb: " << m_PanelNb
+    G4cout << " panelNb: " << m_PanelNb
            << "Edep: " << std::setw(4) << G4GetBestUnit(m_Edep, "Energy")
            << "Pos: " << std::setw(4) << G4GetBestUnit(m_Pos, "Length")
            << G4endl;

@@ -8,9 +8,6 @@
 #define _CUBE_PANEL_SD_H_ 1
 
 #include "G4VSensitiveDetector.hh"
-#include "CubeHit.hh"
-
-#include <vector>
 
 class G4Step;
 class G4HCofThisEvent;

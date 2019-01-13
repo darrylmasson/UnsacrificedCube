@@ -14,6 +14,7 @@
 #include "G4SDManager.hh"
 
 #include "G4Box.hh"
+#include "G4Orb.hh"
 #include "G4LogicalVolume.hh"
 #include "G4PVPlacement.hh"
 
@@ -22,12 +23,41 @@
 #include "G4SystemOfUnits.hh"
 
 CubeDetectorConstruction::CubeDetectorConstruction() : G4VUserDetectorConstruction() {
-    m_pMessenger = std::make_unique(new CubeDetectorMessenger(this));
-    m_bCheckOverlap = true;
+    m_pMessenger = std::unique_ptr<CubeDetectorMessenger>(new CubeDetectorMessenger(this));
+
+    m_dPanelEdge = 30*cm;
+    m_dPanelThick = 25*mm;
+    m_iTileCount = 1;
+    m_iPanelCount = 0;
+
+    m_pWorldSolid = nullptr;
+    m_pWorldLV = nullptr;
+    m_pWorldPV = nullptr;
+
+    m_pWaterSolid = nullptr;
+    m_pWaterLV = nullptr;
+    m_pWaterPV = nullptr;
+
+    m_pPanelSolid = nullptr;
+    m_pWaterLV = nullptr;
 }
 
 CubeDetectorConstruction::~CubeDetectorConstruction() {
     m_pMessenger.reset();
+    for (int i = 0; i < NUM_DIMS; i++) {
+        for (unsigned j = 0; i < m_pWaterPV.size(); j++) {
+            delete m_aPanelPVs[i][j];
+    }   }
+    delete m_pPanelLV;
+    delete m_pPanelSolid;
+
+    delete m_pWaterPV;
+    delete m_pWaterLV;
+    delete m_pWaterSolid;
+
+    delete m_pWorldPV;
+    delete m_pWorldLV;
+    delete m_pWorldSolid;
 }
 
 G4VPhysicalVolume* CubeDetectorConstruction::Construct() {
@@ -47,81 +77,100 @@ void CubeDetectorConstruction::DefineMaterials() {
 }
 
 G4PhysicalVolume* CubeDetectorConstruction::DefineVolumes() {
+    if (m_pWorldPV) return m_pWorldPV;
     // get materials
     G4Material* air = G4Material::GetMaterial("G4_AIR");
     G4Material* h2o = G4Material::GetMaterial("G4_WATER");
     G4Material* scint = G4Material::GetMaterial("G4_PLASTIC_SC_VINYLTOLUENE");
 
     // set geometry parameters
-    G4double dWorldSize = 10.*m;
-    G4double dPanelWidth = 30.*cm;
-    G4double dPanelLength = 30.*cm;
-    G4double dPanelThickness = 25.*mm;
-    G4double dPanelSeparation = 30.*cm; // center to center
+    m_dWorldRadius = m_iTileCount * m_dPanelEdge;
+    G4double fudgefactor = 5*mm; // gaps between panels for cables etc
 
     // World volumes
-    auto SolidWorld = new G4Box("world", dWorldSize/2., dWorldSize/2., dWorldSize/2.);
-    auto LogicWorld = new G4LogicalVolume(SolidWorld, air, "world");
-    auto PhysWorld = new G4PVPlacement(0,               // rotation
-                                       G4ThreeVector(), // location
-                                       LogicWorld,      // logical volume
-                                       "world",         // name
-                                       nullptr,         // mother volume
-                                       false,           // boolean operations
-                                       0,               // copy number
-                                       m_bCheckOverlap);// check overlap
+    m_pWorldSolid = new G4Orb("world", m_dWorldRadius);
+    m_pWorldLV = new G4LogicalVolume(SolidWorld, air, "world");
+    m_pWorldPV = new G4PVPlacement(0,               // rotation
+                                   G4ThreeVector(), // location
+                                   m_pWorldLV,      // logical volume
+                                   "world",         // name
+                                   nullptr,         // mother volume
+                                   false,           // boolean operations
+                                   0,               // copy number
+                                   false);          // check overlap
+
+    G4double water_size = m_iTileCount*m_dPanelEdge + \
+                          (m_iTileCount+1)*m_dPanelThick + \
+                          2*m_iTileCount*fudgefactor;
+    m_dCubeFullEdge = water_size;
+
+    m_pWaterSolid = new G4Box("water", water_size/2, water_size/2, water_size/2);
+    m_pWaterLV = new G4LogicalVolume(m_pWaterSolid,  h2o, "water");
+    m_pWaterPV = new G4PVPlacement(0,
+            G4ThreeVector(),
+            m_pWaterLV,
+            "water",
+            m_pWorldLV,
+            false,
+            0,
+            false);
 
     // panel volumes
-    auto SolidPanel1 = new G4Box("panel1", dPanelWidth/2., dPanelLength/2., dPanelThickness/2.);
-    auto LogicPanel1 = new G4LogicalVolume(SolidPanel1, scint, "panel1");
-    auto PhysPanel1 = new G4PVPlacement(0,
-                                        G4ThreeVector(0, 0, dPanelSeparation/2. + dPanelThickness/2.),
-                                        LogicPanel1,
-                                        "panel1",
-                                        PhysWorld,
-                                        false,
-                                        0,
-                                        m_bCheckOverlap);
-
-    auto SolidPanel2 = new G4Box("panel2", dPanelWidth/2., dPanelLength/2., dPanelThickness/2.);
-    auto LogicPanel2 = new G4LogicalVolume(SolidPanel2, scint, "panel2");
-    auto PhysPanel2 = new G4PVPlacement(0,
-                                        G4ThreeVector(0, 0, -dPanelSeparation/2. - dPanelThickness/2.),
-                                        LogicPanel2,
-                                        "panel2",
-                                        PhysWorld,
-                                        false,
-                                        0,
-                                        m_bCheckOverlap);
-
-    // water buffer
-    auto SolidWater = new G4Box("water", dPanelWidth/2., dPanelLength/2., dPanelSeparation - dPanelThickness);
-    auto LogicWater = new G4LogicalVolume(solidWater, h2o, "water");
-    auto PhysWater = new G4PVPlacement(0,
-                                       G4ThreeVector(0, 0, 0);
-                                       LogicWater,
-                                       "water",
-                                       PhysWorld,
-                                       false,
-                                       0,
-                                       m_bCheckOverlap);
+    m_pPanelSolid = new G4Box("panel", m_dPanelEdge/2, m_dPanelEdge/2, m_dPanelThick/2);
+    m_pPanelLV = new G4LogicalVolume(panelSolid, scint, "panel");
+    G4ThreeVector       pos;
+    G4RotationMatrix*   rotator;
+    G4double x, y, z;
+    for (int axis = _x; axis <= _z; axis++) {
+        for (double plane = -m_iTileCount/2.; plane < m_iTileCount/2.+0.1; plane+=1.) {
+            for (double row = -(m_iTileCount-1)/2.; row < (m_iTileCount-1)/2.+0.1; row+=1.) {
+                for (double col = -(m_iTileCount-1)/2.; col < (m_iTileCount-1)/2.+0.1; col+=1.) {
+                    rotator = new G4RotationMatrix();
+                    if (axis == _x) {
+                        rotator->rotateY(90*deg);
+                        x = plane * m_dPanelEdge + 2*plane*fudge_factor + plane*m_dPanelThick;
+                        y = row;
+                        z = col;
+                    } else if (axis == _y) {
+                        rotator->rotateX(90*deg);
+                        x = row;
+                        y = plane * m_dPanelEdge + 2*plane*fudge_factor + plane*m_dPanelThick;
+                        z = col;
+                    } else {
+                        x = row;
+                        y = col;
+                        z = plane * m_dPanelEdge + 2*plane*fudge_factor + plane*m_dPanelThick;
+                    }
+                    G4cout << "Generating panel " << copy << G4endl;
+                    m_vPanelPVs.push_back(new G4PVPlacement(
+                            rotator,
+                            G4ThreeVector(x, y, z),
+                            panelLV,
+                            "panel",
+                            m_pWaterLV,
+                            false,
+                            m_iPanelCount++,
+                            false));
+                }
+            }
+        }
+    }
 
     // visualization attributes
-    LogicWorld->SetVisAttributes(G4VisAttributes::GetInvisible());
-    auto PanelVisAtt = new G4VisAttributes(G4Color(0,1,0));
+    m_pWorldLV->SetVisAttributes(G4VisAttributes::GetInvisible());
+    auto PanelVisAtt = new G4VisAttributes(G4Color(0,1,0,0.7));
     PanelVisAtt->SetVisibility(true);
-    LogicPanel1->SetVisAttributes(PanelVisAtt);
-    LogicPanel2->SetVisAttributes(PanelVisAtt);
-    auto WaterVisAtt = new G4VisAttributes(G4Color(0,0,1));
+    m_pPanelLV->SetVisAttributes(PanelVisAtt);
+    auto WaterVisAtt = new G4VisAttributes(G4Color(0,0,1,0.1));
     WaterVisAtt->SetVisibility(true);
-    LogicWater->SetVisAttributes(WaterVisAtt);
+    m_pWaterLV->SetVisAttributes(WaterVisAtt);
 
-    return PhysWorld;
+    return m_pWorldPV;
 }
 
 void CubeDetectorConstruction::ConstructSDandField() {
     auto panelSD = new CubeSensitiveDetector("Panel", "PanelCollection");
     G4SDManager::GetSDMpointer()->AddNewDetector(panelSD);
-    SetSensitiveDetector("Panel", panelSD);
+    m_pPanelLV->SetSensitiveDetector(panelSD);
 }
 

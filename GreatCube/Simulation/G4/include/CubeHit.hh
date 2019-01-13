@@ -11,7 +11,6 @@
 #include "GVTHitsCollection.hh"
 #include "G4Allocator.hh"
 #include "G4ThreeVector.hh"
-#include "G4Threading.hh"
 
 class CubeHit : public G4VHit {
     public:
@@ -28,17 +27,13 @@ class CubeHit : public G4VHit {
         virtual void Draw();
         virtual void Print();
 
-        void Add(G4double de, G4double dl);
+        G4double GetEdep()      const {return m_Edep;}
+        G4ThreeVector GetPos()  const {return m_Pos;}
+        G4int GetPanelNb()      const {return m_PanelNb;}
 
-        G4double GetEdep() const {return m_Edep;}
-        G4ThreeVector GetPos() const {return m_Pos;}
-        G4int GetTrackID() const {return m_TrackID;}
-        G4int GetPanelNb() const {return m_PanelNb;}
-
-        void SetEdep(G4double edep) {m_Edep = edep;}
-        void SetPos(G4ThreeVector pos) {m_Pos = pos;}
-        void SetTrackID(G4int TrackID) {m_TrackID = TrackID;}
-        void SetPanelNb(G4int PanelNB) {m_PanelNB = PanelNB;}
+        void SetEdep(G4double edep)     {m_Edep = edep;}
+        void SetPos(G4ThreeVector pos)  {m_Pos = pos;}
+        void SetPanelNb(G4int PanelNB)  {m_PanelNB = PanelNB;}
 
     private:
         G4double m_Edep;
@@ -59,3 +54,5 @@ inline void* CubeHit::operator new(size_t) {
 inline void CubeHit::operator delete(void* hit) {
     CubeHitAllocator->FreeSingle((CubeHit*)hit);
 }
+
+#endif // _CUBE_H_ defined

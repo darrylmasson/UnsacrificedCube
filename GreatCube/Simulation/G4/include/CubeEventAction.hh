@@ -15,14 +15,17 @@ class G4Event;
 
 class CubeEventAction : public G4VUserEventAction {
     public:
-        CubeEventAction();
+        CubeEventAction(G4int NumPanels);
         virtual ~CubeEventAction();
 
         virtual void BeginOfEventAction(const G4Event* event);
         virtual void EndOfEventAction(const G4Event* event);
 
+        void Accumulate(G4int panel, G4double edep);
+
     private:
         CubeHitsCollection* GetHitsCollection(G4int hcID, const G4event* event) const;
+        std::vector<G4double> m_vEdep;
 
         G4int m_PanelHCID;
 
