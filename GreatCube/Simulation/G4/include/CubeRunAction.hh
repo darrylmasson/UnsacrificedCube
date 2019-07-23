@@ -7,14 +7,14 @@
 #ifndef _CUBE_RUN_ACTION_H_
 #define _CUBE_RUN_ACTION_H_ 1
 
-#include "G4VUserRunAction.hh"
+#include "G4UserRunAction.hh"
 #include "globals.hh"
 #include <memory>
 #include "CubeAnalysis.hh"
 
 class G4Run;
 
-class CubeRunAction : public G4VUserRunAction {
+class CubeRunAction : public G4UserRunAction {
     public:
         CubeRunAction(G4int);
         virtual ~CubeRunAction();

@@ -17,6 +17,7 @@ class G4VPhysicalVolume;
 class G4LogicalVolume;
 class G4Box;
 class G4Orb;
+class G4VisAttributes;
 
 class CubeDetectorMessenger;
 
@@ -31,17 +32,19 @@ class CubeDetectorConstruction : public G4VUserDetectorConstruction {
         virtual G4VPhysicalVolume* Construct();
         virtual void ConstructSDandField();
 
-        void SetPanelThickness(G4double thick)  {m_dPanelThick = thick;};
-        void SetPanelSize(G4double size)        {m_dPanelEdge = size;};
-        void SetTiling(G4int num)               {m_iTileCount = num;};
+        void SetPanelThickness(G4double thick)  {m_dPanelThick = thick;}
+        void SetPanelSize(G4double size)        {m_dPanelEdge = size;}
+        void SetTiling(G4int num)               {m_iTileCount = num;}
 
-        G4int GetPanelCount()                    {return m_iPanelCount;};
+        G4int GetPanelCount()                   {return m_iPanelCount;}
+        G4double GetWorldSize()                 {return m_iTileCount * m_dPanelEdge;}
 
     private:
         enum {
             _x = 0,
             _y,
-            _z};
+            _z,
+            NUM_DIMS};
         void DefineMaterials();
         G4VPhysicalVolume* DefineVolumes();
 
@@ -54,10 +57,12 @@ class CubeDetectorConstruction : public G4VUserDetectorConstruction {
         G4Box*              m_pWaterSolid;
         G4LogicalVolume*    m_pWaterLV;
         G4VPhysicalVolume*  m_pWaterPV;
+        G4VisAttributes*    m_pWaterVis;
 
-        G4Box*                          m_pPanelSolid;
-        G4LogicalVolume*                m_pPanelLV;
+        vector<G4Box*>                  m_vPanelSolids;
+        vector<G4LogicalVolume*>        m_vPanelLVs;
         vector<G4VPhysicalVolume*>      m_vPanelPVs;
+        G4VisAttributes*                m_pPanelVis;
 
         G4double m_dPanelEdge;
         G4double m_dPanelThick;

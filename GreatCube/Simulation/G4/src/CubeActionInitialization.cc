@@ -5,20 +5,25 @@
 // please not to sacrifice the great cube
 
 #include "CubeActionInitialization.hh"
+#include "CubeDetectorConstruction.hh"
 #include "CubePrimaryGeneratorAction.hh"
 #include "CubeRunAction.hh"
 #include "CubeEventAction.hh"
 
-CubeActionInitialization::CubeActionInitialization() : G4VUserActionInitialization() {}
+CubeActionInitialization::CubeActionInitialization(CubeDetectorConstruction* detcon) : G4VUserActionInitialization() {
+    m_pDetCon = detcon;
+}
 
-CubeActionInitialization::~CubeActionInitialization() {}
+CubeActionInitialization::~CubeActionInitialization() {
+    m_pDetCon = nullptr;
+}
 
-void CubeActionInitalization::BuildForMaster() const {
-    SetUserAction(new CubeRunAction);
+void CubeActionInitialization::BuildForMaster() const {
+    SetUserAction(new CubeRunAction(m_pDetCon->GetPanelCount()));
 }
 
 void CubeActionInitialization::Build() const {
-    SetUserAction(new CubePrimaryGeneratorAction);
-    SetUserAction(new CubeRunAction);
-    SetUserAction(new CubeEventAction);
+    SetUserAction(new CubePrimaryGeneratorAction(m_pDetCon->GetWorldSize()));
+    SetUserAction(new CubeRunAction(m_pDetCon->GetPanelCount()));
+    SetUserAction(new CubeEventAction(m_pDetCon->GetPanelCount()));
 }

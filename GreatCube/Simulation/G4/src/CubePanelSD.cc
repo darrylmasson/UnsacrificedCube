@@ -5,7 +5,6 @@
 // please not to sacrifice the great cube
 
 #include "CubePanelSD.hh"
-#include "CubeHit.hh"
 
 #include "G4HCofThisEvent.hh"
 #include "G4Step.hh"
@@ -20,7 +19,7 @@ CubePanelSD::CubePanelSD(const G4String& name, const G4String& hitsCollectionNam
 
 CubePanelSD::~CubePanelSD() {}
 
-void CubePanelSD::Initialze(G4HCofThisEvent* hce) {
+void CubePanelSD::Initialize(G4HCofThisEvent* hce) {
     m_pHitCollection = new CubeHitsCollection(SensitiveDetectorName, collectionName[0]);
     auto hcID = G4SDManager::GetSDMpointer()->GetCollectionID(collectionName[0]);
     hce->AddHitsCollection(hcID, m_pHitCollection);
@@ -37,7 +36,7 @@ G4bool CubePanelSD::ProcessHits(G4Step* step, G4TouchableHistory*) {
     auto poststep = step->GetPostStepPoint();
     hit->SetPanelNb(prestep->GetTouchableHandle()->GetCopyNumber());
     hit->SetEdep(edep);
-    hit->SetPos(0.5*(prestep->GetPosition() + prestep->GetPosition()));
+    hit->SetPos(0.5*(prestep->GetPosition() + poststep->GetPosition()));
 
     m_pHitCollection->insert(hit);
 
@@ -46,7 +45,7 @@ G4bool CubePanelSD::ProcessHits(G4Step* step, G4TouchableHistory*) {
 
 void CubePanelSD::EndOfEvent(G4HCofThisEvent*) {
     if (verboseLevel > 1) {
-        auto NumHits = fHitsCollection->entries();
+        auto NumHits = m_pHitCollection->entries();
         G4cout << "Hit collection: this event has " << NumHits << "hits: " << G4endl;
         for (G4int i = 0; i < NumHits; i++) (*m_pHitCollection)[i]->Print();
     }

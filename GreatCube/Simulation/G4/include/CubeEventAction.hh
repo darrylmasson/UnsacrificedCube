@@ -7,13 +7,13 @@
 #ifndef _CUBE_EVENT_ACTION_H_
 #define _CUBE_EVENT_ACTION_H_ 1
 
-#include "G4VUserEventAction.hh"
+#include "G4UserEventAction.hh"
 #include "CubeHit.hh"
-#include "globals.hh"
+#include <vector>
 
 class G4Event;
 
-class CubeEventAction : public G4VUserEventAction {
+class CubeEventAction : public G4UserEventAction {
     public:
         CubeEventAction(G4int NumPanels);
         virtual ~CubeEventAction();
@@ -21,12 +21,10 @@ class CubeEventAction : public G4VUserEventAction {
         virtual void BeginOfEventAction(const G4Event* event);
         virtual void EndOfEventAction(const G4Event* event);
 
-        void Accumulate(G4int panel, G4double edep);
-
     private:
-        CubeHitsCollection* GetHitsCollection(G4int hcID, const G4event* event) const;
+        CubeHitsCollection* GetHitsCollection(G4int hcID, const G4Event* event) const;
         std::vector<G4double> m_vEdep;
 
         G4int m_PanelHCID;
-
+};
 #endif // _CUBE_EVENT_ACTION_H_

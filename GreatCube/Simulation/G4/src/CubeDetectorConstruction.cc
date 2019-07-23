@@ -18,7 +18,7 @@
 #include "G4LogicalVolume.hh"
 #include "G4PVPlacement.hh"
 
-#include "G4VisAtributes.hh"
+#include "G4VisAttributes.hh"
 #include "G4Color.hh"
 #include "G4SystemOfUnits.hh"
 
@@ -38,19 +38,21 @@ CubeDetectorConstruction::CubeDetectorConstruction() : G4VUserDetectorConstructi
     m_pWaterLV = nullptr;
     m_pWaterPV = nullptr;
 
-    m_pPanelSolid = nullptr;
-    m_pWaterLV = nullptr;
 }
 
 CubeDetectorConstruction::~CubeDetectorConstruction() {
     m_pMessenger.reset();
-    for (int i = 0; i < NUM_DIMS; i++) {
-        for (unsigned j = 0; i < m_pWaterPV.size(); j++) {
-            delete m_aPanelPVs[i][j];
-    }   }
-    delete m_pPanelLV;
-    delete m_pPanelSolid;
+    delete m_pPanelVis;
+    for (unsigned i = 0; i < m_vPanelSolids.size(); i++) {
+        delete m_vPanelPVs[i];
+        delete m_vPanelLVs[i];
+        delete m_vPanelSolids[i];
+    }
+    m_vPanelPVs.clear();
+    m_vPanelLVs.clear();
+    m_vPanelSolids.clear();
 
+    delete m_pWaterVis;
     delete m_pWaterPV;
     delete m_pWaterLV;
     delete m_pWaterSolid;
@@ -76,7 +78,7 @@ void CubeDetectorConstruction::DefineMaterials() {
     G4cout << *(G4Material::GetMaterialTable()) << G4endl;
 }
 
-G4PhysicalVolume* CubeDetectorConstruction::DefineVolumes() {
+G4VPhysicalVolume* CubeDetectorConstruction::DefineVolumes() {
     if (m_pWorldPV) return m_pWorldPV;
     // get materials
     G4Material* air = G4Material::GetMaterial("G4_AIR");
@@ -89,7 +91,7 @@ G4PhysicalVolume* CubeDetectorConstruction::DefineVolumes() {
 
     // World volumes
     m_pWorldSolid = new G4Orb("world", m_dWorldRadius);
-    m_pWorldLV = new G4LogicalVolume(SolidWorld, air, "world");
+    m_pWorldLV = new G4LogicalVolume(m_pWorldSolid, air, "world");
     m_pWorldPV = new G4PVPlacement(0,               // rotation
                                    G4ThreeVector(), // location
                                    m_pWorldLV,      // logical volume
@@ -98,6 +100,7 @@ G4PhysicalVolume* CubeDetectorConstruction::DefineVolumes() {
                                    false,           // boolean operations
                                    0,               // copy number
                                    false);          // check overlap
+    m_pWorldLV->SetVisAttributes(G4VisAttributes::GetInvisible());
 
     G4double water_size = m_iTileCount*m_dPanelEdge + \
                           (m_iTileCount+1)*m_dPanelThick + \
@@ -114,13 +117,16 @@ G4PhysicalVolume* CubeDetectorConstruction::DefineVolumes() {
             false,
             0,
             false);
+    m_pWaterVis = new G4VisAttributes(G4Color(0,0,1,0.1));
+    m_pWaterVis->SetVisibility(true);
+    m_pWaterLV->SetVisAttributes(m_pWaterVis);
 
     // panel volumes
-    m_pPanelSolid = new G4Box("panel", m_dPanelEdge/2, m_dPanelEdge/2, m_dPanelThick/2);
-    m_pPanelLV = new G4LogicalVolume(panelSolid, scint, "panel");
     G4ThreeVector       pos;
     G4RotationMatrix*   rotator;
     G4double x, y, z;
+    m_pPanelVis = new G4VisAttributes(G4Color(0,1,0,0.7));
+    m_pPanelVis->SetVisibility(true);
     for (int axis = _x; axis <= _z; axis++) {
         for (double plane = -m_iTileCount/2.; plane < m_iTileCount/2.+0.1; plane+=1.) {
             for (double row = -(m_iTileCount-1)/2.; row < (m_iTileCount-1)/2.+0.1; row+=1.) {
@@ -128,24 +134,27 @@ G4PhysicalVolume* CubeDetectorConstruction::DefineVolumes() {
                     rotator = new G4RotationMatrix();
                     if (axis == _x) {
                         rotator->rotateY(90*deg);
-                        x = plane * m_dPanelEdge + 2*plane*fudge_factor + plane*m_dPanelThick;
+                        x = plane * m_dPanelEdge + 2*plane*fudgefactor + plane*m_dPanelThick;
                         y = row;
                         z = col;
                     } else if (axis == _y) {
                         rotator->rotateX(90*deg);
                         x = row;
-                        y = plane * m_dPanelEdge + 2*plane*fudge_factor + plane*m_dPanelThick;
+                        y = plane * m_dPanelEdge + 2*plane*fudgefactor + plane*m_dPanelThick;
                         z = col;
                     } else {
                         x = row;
                         y = col;
-                        z = plane * m_dPanelEdge + 2*plane*fudge_factor + plane*m_dPanelThick;
+                        z = plane * m_dPanelEdge + 2*plane*fudgefactor + plane*m_dPanelThick;
                     }
-                    G4cout << "Generating panel " << copy << G4endl;
+                    m_vPanelSolids.push_back(new G4Box("panel", m_dPanelEdge/2, m_dPanelEdge/2, m_dPanelThick/2));
+                    m_vPanelLVs.push_back(new G4LogicalVolume(m_vPanelSolids.back(), scint, "panel"));
+                    m_vPanelLVs.back()->SetVisAttributes(m_pPanelVis);
+                    G4cout << "Generating panel " << m_iPanelCount << G4endl;
                     m_vPanelPVs.push_back(new G4PVPlacement(
                             rotator,
                             G4ThreeVector(x, y, z),
-                            panelLV,
+                            m_vPanelLVs.back(),
                             "panel",
                             m_pWaterLV,
                             false,
@@ -156,21 +165,12 @@ G4PhysicalVolume* CubeDetectorConstruction::DefineVolumes() {
         }
     }
 
-    // visualization attributes
-    m_pWorldLV->SetVisAttributes(G4VisAttributes::GetInvisible());
-    auto PanelVisAtt = new G4VisAttributes(G4Color(0,1,0,0.7));
-    PanelVisAtt->SetVisibility(true);
-    m_pPanelLV->SetVisAttributes(PanelVisAtt);
-    auto WaterVisAtt = new G4VisAttributes(G4Color(0,0,1,0.1));
-    WaterVisAtt->SetVisibility(true);
-    m_pWaterLV->SetVisAttributes(WaterVisAtt);
-
     return m_pWorldPV;
 }
 
 void CubeDetectorConstruction::ConstructSDandField() {
-    auto panelSD = new CubeSensitiveDetector("Panel", "PanelCollection");
+    auto panelSD = new CubePanelSD("Panel", "PanelHitsCollection");
     G4SDManager::GetSDMpointer()->AddNewDetector(panelSD);
-    m_pPanelLV->SetSensitiveDetector(panelSD);
+    for (auto& panel : m_vPanelLVs) panel->SetSensitiveDetector(panelSD);
 }
 

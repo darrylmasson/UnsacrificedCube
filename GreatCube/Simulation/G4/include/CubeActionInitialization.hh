@@ -9,12 +9,18 @@
 
 #include "G4VUserActionInitialization.hh"
 
+class CubeDetectorConstruction;
+
 class CubeActionInitialization : public G4VUserActionInitialization {
     public:
-        CubeActionInitialization();
+        CubeActionInitialization(CubeDetectorConstruction*);
         virtual ~CubeActionInitialization();
 
         virtual void BuildForMaster() const;
         virtual void Build() const;
 
+    private:
+        CubeDetectorConstruction* m_pDetCon;
+
+};
 #endif // _CUBE_ACTION_INIT_H_

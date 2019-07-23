@@ -5,20 +5,13 @@
 // please not to sacrifice the great cube
 
 #include "CubeEventAction.hh"
-#include "CubePanelSD.hh"
-#include "CubeHit.hh"
-#include "CubeAnalysisManager.hh"
+#include "CubeAnalysis.hh"
 
-#include "G4RunManager.hh"
 #include "G4Event.hh"
 #include "G4SDManager.hh"
 #include "G4HCofThisEvent.hh"
-#include "G4UnitsTable.hh"
 
-#include "Randomize.hh"
-#include <iomanip>
-
-CubeEventAction::CubeEventAction(G4int NumPanels) : G4VUserEventAction() {
+CubeEventAction::CubeEventAction(G4int NumPanels) : G4UserEventAction() {
     m_PanelHCID = -1;
     m_vEdep.assign(NumPanels, 0);
 }
@@ -30,17 +23,17 @@ void CubeEventAction::BeginOfEventAction(const G4Event* event) {
 }
 
 void CubeEventAction::EndOfEventAction(const G4Event* event) {
-    if (m_PanelHCID == -1) m_PanelHCID = GetSDMpointer()->GetCollectionID("PanelHitsCollection");
+    if (m_PanelHCID == -1) m_PanelHCID = G4SDManager::GetSDMpointer()->GetCollectionID("PanelHitsCollection");
 
-    auto PanelHC = GetHitsCollection(m_PanelHCID, event);
-    auto PanelHit = (*PanelHC)[PanelHC->entries()-1];
+    auto HitColl = GetHitsCollection(m_PanelHCID, event);
+    CubeHit* PanelHit = (CubeHit*)(*HitColl)[HitColl->entries()-1];
 
     auto analysisManager = G4AnalysisManager::Instance();
-    analysisManager->FillNtupleDColumn(0, panelHit->GetEdep());
+    analysisManager->FillNtupleDColumn(0, PanelHit->GetEdep());
     analysisManager->AddNtupleRow();
 }
 
-CubeHitsCollection* CubeEventAction::GetHitsCollection(G4int hcID, const G4event* event) const {
+CubeHitsCollection* CubeEventAction::GetHitsCollection(G4int hcID, const G4Event* event) const {
     auto hitsCollection = static_cast<CubeHitsCollection*>(event->GetHCofThisEvent()->GetHC(hcID));
     if (!hitsCollection) {
         G4ExceptionDescription msg;

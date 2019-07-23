@@ -19,18 +19,18 @@
 int main(int argc, char** argv) {
     G4Random::setTheEngine(new CLHEP::RanecuEngine);
 
-    std::unique_ptr<G4RunManager> runManager = std::make_unique<G4RunManager>(new G4RunManager);
+    std::unique_ptr<G4RunManager> runManager = std::unique_ptr<G4RunManager>(new G4RunManager);
 
-    runManager->SetUserInitialization(new CubeDetectorConstruction());
+    auto detcon = new CubeDetectorConstruction();
+    runManager->SetUserInitialization(detcon);
     runManager->SetUserInitialization(new FTFP_BERT());
-    runManager->SetUserInitialization(new CubeActionInitialization());
+    runManager->SetUserInitialization(new CubeActionInitialization(detcon));
 
-    auto visMan = std::make_unique<G4VisExecutive>(new G4VisExecutive);
+    auto visMan = std::unique_ptr<G4VisExecutive>(new G4VisExecutive);
     visMan->Initialize();
     auto UIman = G4UImanager::GetUIpointer();
 
-    G4int iNumEvents(3);
-    UIman->beamOn(iNumEvents);
+    UIman->ApplyCommand("/run/beamOn 3");
 
     visMan.reset();
     runManager.reset();

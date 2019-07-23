@@ -11,10 +11,10 @@
 #include "G4UnitsTable.hh"
 #include "G4SystemOfUnits.hh"
 
-CubeRunAction::CubeRunAction(G4int num_panels) : G4VUserRunAction () {
+CubeRunAction::CubeRunAction(G4int num_panels) : G4UserRunAction () {
     G4RunManager::GetRunManager()->SetPrintProgress(1);
 
-    m_AnalysisManager = std::make_unique<G4AnalysisManager>(G4AnalysisManager::Instance());
+    m_AnalysisManager = std::unique_ptr<G4AnalysisManager>(G4AnalysisManager::Instance());
     G4cout << "Using " << m_AnalysisManager->GetType() << G4endl;
     m_iNumPanels = num_panels;
 
@@ -43,6 +43,7 @@ void CubeRunAction::BeginOfRunAction(const G4Run*) {
     for (int i = 0; i < m_iNumPanels; i++) {
         sprintf(name, "panel_%03i", i);
         m_AnalysisManager->CreateNtupleDColumn(name);
+    }
     m_AnalysisManager->FinishNtuple();
 
     //m_AnalysisManager->CreateNtuple("hitpos", "Hit positions");

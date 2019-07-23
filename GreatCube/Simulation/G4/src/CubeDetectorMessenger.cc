@@ -7,6 +7,7 @@
 #include "G4UIcmdWithAString.hh"
 #include "G4UIcmdWithADoubleAndUnit.hh"
 #include "G4UIcmdWithoutParameter.hh"
+#include "G4UIcmdWithAnInteger.hh"
 
 
 CubeDetectorMessenger::CubeDetectorMessenger(CubeDetectorConstruction* detcon) : G4UImessenger(),
@@ -50,7 +51,7 @@ void CubeDetectorMessenger::SetNewValue(G4UIcommand* command, G4String value) {
         m_pDetCon->SetPanelThickness(m_pPanelThicknessCmd->GetNewDoubleValue(value));
     } else if (command == m_pPanelSizeCmd) {
         m_pDetCon->SetPanelSize(m_pPanelSizeCmd->GetNewDoubleValue(value));
-    } else if (cmd == m_pPanelTileCountCmd) {
+    } else if (command == m_pPanelTileCountCmd) {
         m_pDetCon->SetTiling(m_pPanelTileCountCmd->GetNewIntValue(value));
     }
 }

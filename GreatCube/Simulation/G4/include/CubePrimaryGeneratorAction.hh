@@ -16,14 +16,14 @@ class G4Event;
 
 class CubePrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction {
     public:
-        CubePrimaryGeneratorAction();
+        CubePrimaryGeneratorAction(G4double);
         virtual ~CubePrimaryGeneratorAction();
 
-        virtual void GeneratePrimaries(G4Event* event);
+        virtual void GeneratePrimaries(G4Event*);
 
     private:
         std::unique_ptr<G4ParticleGun> m_pParticleGun;
-        G4double m_dWorldSize;
+        G4double m_dWorldRadius;
         G4double m_dCubeSize;
 };
 

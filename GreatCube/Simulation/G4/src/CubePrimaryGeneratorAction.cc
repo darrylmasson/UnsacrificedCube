@@ -5,11 +5,9 @@
 // please not to sacrifice the great cube
 
 #include "CubePrimaryGeneratorAction.hh"
+#include "CubeAnalysis.hh"
 
 #include "G4RunManager.hh"
-#include "G4LogicalVolumeStore.hh"
-#include "G4LogicalVolume.hh"
-#include "G4Box.hh"
 #include "G4Event.hh"
 #include "G4ParticleGun.hh"
 #include "G4ParticleTable.hh"
@@ -20,14 +18,14 @@
 
 const G4double pi = acos(-1.0);
 
-CubePrimaryGeneratorAction::CubePrimaryGeneratorAction(G4double world, G4double edge) : G4VUserPrimaryGeneratorAction() {
+CubePrimaryGeneratorAction::CubePrimaryGeneratorAction(G4double world) : G4VUserPrimaryGeneratorAction() {
     G4int iNumParticles = 1;
-    m_pParticleGun = std::make_unique(new G4ParticleGun(iNumParticles));
+    m_pParticleGun = std::unique_ptr<G4ParticleGun>(new G4ParticleGun(iNumParticles));
 
     auto particleDef = G4ParticleTable::GetParticleTable()->FindParticle("mu-");
-    m_pParticleGun->SetParticleDefinition(partDef);
-    m_dWorldSize = world;
-    m_dCubeSize = edge;
+    m_pParticleGun->SetParticleDefinition(particleDef);
+    m_dWorldRadius = world;
+    m_dCubeSize = world;
 }
 
 CubePrimaryGeneratorAction::~CubePrimaryGeneratorAction() {
@@ -36,17 +34,12 @@ CubePrimaryGeneratorAction::~CubePrimaryGeneratorAction() {
 
 // this is called at the beginning of an event
 void CubePrimaryGeneratorAction::GeneratePrimaries(G4Event* event) {
-    G4double dWorldHalfZ = 10.;
-    auto WorldLV = G4LogicalVolumeStore::GetInstance()->GetVolume("world");
-    G4box* worldBox = nullptr;
-    if (WorldLV) worldBox = dynamic_cast<G4Box*>(WorldLV->GetSolid());
-    if (worldBox) dWorldHalfZ = worldBox->GetZHalfLength();
 
     G4double theta = pi*G4UniformRand();
     G4double phi = 2*pi*G4UniformRand();
-    G4double x_pri = m_dWorldSize * cos(phi) * sin(theta);
-    G4double y_pri = m_dWorldSize * sin(phi) * sin(theta);
-    G4double z_pri = m_dWorldSize * cos(theta);
+    G4double x_pri = m_dWorldRadius * cos(phi) * sin(theta);
+    G4double y_pri = m_dWorldRadius * sin(phi) * sin(theta);
+    G4double z_pri = m_dWorldRadius * cos(theta);
     G4ThreeVector pos_pri = G4ThreeVector(x_pri, y_pri, z_pri);
     m_pParticleGun->SetParticlePosition(pos_pri);
 

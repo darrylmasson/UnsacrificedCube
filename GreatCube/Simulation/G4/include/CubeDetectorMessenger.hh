@@ -9,7 +9,7 @@ class G4UIdirectory;
 class G4UIcmdWithADoubleAndUnit;
 class G4UIcmdWithAnInteger;
 
-class CubeDetectorMessenger : public G4UIMessenger {
+class CubeDetectorMessenger : public G4UImessenger {
     public:
         CubeDetectorMessenger(CubeDetectorConstruction*);
         virtual ~CubeDetectorMessenger();
@@ -17,6 +17,7 @@ class CubeDetectorMessenger : public G4UIMessenger {
         virtual void SetNewValue(G4UIcommand*, G4String);
 
     private:
+        CubeDetectorConstruction*   m_pDetCon;
         G4UIdirectory*              m_pUIDir;
 
         G4UIcmdWithADoubleAndUnit*  m_pPanelThicknessCmd;

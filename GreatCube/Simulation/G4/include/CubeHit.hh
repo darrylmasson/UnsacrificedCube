@@ -8,7 +8,7 @@
 #define _CUBE_HIT_H_ 1
 
 #include "G4VHit.hh"
-#include "GVTHitsCollection.hh"
+#include "G4THitsCollection.hh"
 #include "G4Allocator.hh"
 #include "G4ThreeVector.hh"
 
@@ -33,7 +33,7 @@ class CubeHit : public G4VHit {
 
         void SetEdep(G4double edep)     {m_Edep = edep;}
         void SetPos(G4ThreeVector pos)  {m_Pos = pos;}
-        void SetPanelNb(G4int PanelNB)  {m_PanelNB = PanelNB;}
+        void SetPanelNb(G4int PanelNB)  {m_PanelNb = PanelNB;}
 
     private:
         G4double m_Edep;
