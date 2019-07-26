@@ -16,7 +16,7 @@ class G4Run;
 
 class CubeRunAction : public G4UserRunAction {
     public:
-        CubeRunAction(G4int);
+        CubeRunAction(G4int, G4String);
         virtual ~CubeRunAction();
 
         virtual void BeginOfRunAction(const G4Run*);
@@ -25,6 +25,7 @@ class CubeRunAction : public G4UserRunAction {
     private:
         std::unique_ptr<G4AnalysisManager> m_AnalysisManager;
         G4int m_iNumPanels;
+        G4String m_sFilename;
 };
 
 #endif // _CUBE_RUN_ACTION_H_

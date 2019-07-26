@@ -7,13 +7,14 @@
 #ifndef _CUBE_ACTION_INIT_H_
 #define _CUBE_ACTION_INIT_H_ 1
 
+#include "globals.hh"
 #include "G4VUserActionInitialization.hh"
 
 class CubeDetectorConstruction;
 
 class CubeActionInitialization : public G4VUserActionInitialization {
     public:
-        CubeActionInitialization(CubeDetectorConstruction*);
+        CubeActionInitialization(CubeDetectorConstruction*, G4String);
         virtual ~CubeActionInitialization();
 
         virtual void BuildForMaster() const;
@@ -21,6 +22,7 @@ class CubeActionInitialization : public G4VUserActionInitialization {
 
     private:
         CubeDetectorConstruction* m_pDetCon;
+        G4String m_sFilename;
 
 };
 #endif // _CUBE_ACTION_INIT_H_

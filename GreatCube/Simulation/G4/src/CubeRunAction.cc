@@ -11,12 +11,13 @@
 #include "G4UnitsTable.hh"
 #include "G4SystemOfUnits.hh"
 
-CubeRunAction::CubeRunAction(G4int num_panels) : G4UserRunAction () {
+CubeRunAction::CubeRunAction(G4int num_panels, G4String filename) : G4UserRunAction () {
     G4RunManager::GetRunManager()->SetPrintProgress(1);
 
     m_AnalysisManager = std::unique_ptr<G4AnalysisManager>(G4AnalysisManager::Instance());
     G4cout << "Using " << m_AnalysisManager->GetType() << G4endl;
     m_iNumPanels = num_panels;
+    m_sFilename = filename;
 
     m_AnalysisManager->SetVerboseLevel(1);
 }
@@ -26,7 +27,7 @@ CubeRunAction::~CubeRunAction() {
 }
 
 void CubeRunAction::BeginOfRunAction(const G4Run*) {
-    m_AnalysisManager->OpenFile("testing");
+    m_AnalysisManager->OpenFile(m_sFilename);
 
     m_AnalysisManager->CreateNtuple("truth", "MC truth");
     m_AnalysisManager->CreateNtupleDColumn("energy");

@@ -1,0 +1,7 @@
+/run/initialize
+/vis/open OGL
+/vis/viewer/set/autoRefresh true
+/vis/drawVolume
+/vis/scene/add/axes 0 0 0 1 m
+/vis/scene/add/trajectories smooth
+/vis/scene/add/hits
