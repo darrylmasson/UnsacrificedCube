@@ -26,10 +26,13 @@ void CubeEventAction::EndOfEventAction(const G4Event* event) {
     if (m_PanelHCID == -1) m_PanelHCID = G4SDManager::GetSDMpointer()->GetCollectionID("PanelHitsCollection");
 
     auto HitColl = GetHitsCollection(m_PanelHCID, event);
-    CubeHit* PanelHit = (CubeHit*)(*HitColl)[HitColl->entries()-1];
+    CubeHit* hit = nullptr;
 
     auto analysisManager = G4AnalysisManager::Instance();
-    analysisManager->FillNtupleDColumn(0, PanelHit->GetEdep());
+    for (int i = 0; i < HitColl->entries(); i++) {
+        hit = (CubeHit*)(*HitColl)[i];
+        analysisManager->FillNtupleDColumn(1, hit->GetPanelNb(), hit->GetEdep());
+    }
     analysisManager->AddNtupleRow();
 }
 

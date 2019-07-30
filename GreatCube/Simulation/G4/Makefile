@@ -2,26 +2,17 @@ CC = g++
 SRCDIR := src
 INCDIR := include
 OBJDIR := obj
-DEPDIR := include
 
 #CFLAGS = -g -std=c++11 -Wall -Iinclude -I$(G4INCDIR)
-CFLAGS = $(shell /home/darryl/Play/g4-install/bin/geant4-config --cflags)
+CFLAGS = $(shell /home/darryl/Play/g4-install/bin/geant4-config --cflags) -Iinclude
 CPPFLAGS = $(CFLAGS)
 LDFLAGS = $(shell /home/darryl/Play/g4-install/bin/geant4-config --libs)
-DEPFLAGS = -MT $@ -MMD -MP -MF $(DEPDIR)/$*.d
-sources := $(wildcard $(SRC)/*.cc)
-objects := $(sources:%.cc=$(OBJDIR)/%.o)
-deps := $(sources:%.cc=$(DEPDIR)/%.d)
+sources := $(wildcard $(SRCDIR)/*.cc)
+objects := $(sources:.cc=.o)
 EXE = cube
 
 all : $(objects)
-	$(CC) $(CPPFLAGS) $(DEPFLAGS) -o $(EXE) $(objects) $(LDFLAGS)
-
-$(OBJDIR)/%.o : $(SRCDIR)/%.cc $(INCDIR)/%.hh $(DEPDIR)/%.d
-	$(CC) $(CPPFLAGS) -c -o $(OBJDIR)/$@ $<
-
-$(deps):
-include $(wildcard $(deps))
+	$(CC) $(CPPFLAGS) -o $(EXE) $(objects) $(LDFLAGS)
 
 clean:
 	rm -f $(objects) $(deps)

@@ -10,20 +10,18 @@
 #include "G4UserRunAction.hh"
 #include "globals.hh"
 #include <memory>
-#include "CubeAnalysis.hh"
 
 class G4Run;
 
 class CubeRunAction : public G4UserRunAction {
     public:
-        CubeRunAction(G4int, G4String);
+        CubeRunAction();
         virtual ~CubeRunAction();
 
         virtual void BeginOfRunAction(const G4Run*);
         virtual void EndOfRunAction(const G4Run*);
 
     private:
-        std::unique_ptr<G4AnalysisManager> m_AnalysisManager;
         G4int m_iNumPanels;
         G4String m_sFilename;
 };

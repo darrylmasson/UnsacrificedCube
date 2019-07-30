@@ -26,7 +26,7 @@ using std::unique_ptr;
 
 class CubeDetectorConstruction : public G4VUserDetectorConstruction {
     public:
-        CubeDetectorConstruction();
+        CubeDetectorConstruction(G4String);
         virtual ~CubeDetectorConstruction();
 
         virtual G4VPhysicalVolume* Construct();
@@ -36,7 +36,7 @@ class CubeDetectorConstruction : public G4VUserDetectorConstruction {
         void SetPanelSize(G4double size)        {m_dPanelEdge = size;}
         void SetTiling(G4int num)               {m_iTileCount = num;}
 
-        G4int GetPanelCount()                   {return m_iPanelCount;}
+        G4int GetPanelCount();
         G4double GetWorldSize()                 {return m_iTileCount * m_dPanelEdge;}
 
     private:
@@ -44,8 +44,9 @@ class CubeDetectorConstruction : public G4VUserDetectorConstruction {
             _x = 0,
             _y,
             _z,
-            NUM_DIMS};
+            NUM_AXES};
         void DefineMaterials();
+        void BuildAnalysisManager();
         G4VPhysicalVolume* DefineVolumes();
 
         unique_ptr<CubeDetectorMessenger> m_pMessenger;
@@ -70,6 +71,8 @@ class CubeDetectorConstruction : public G4VUserDetectorConstruction {
         G4int m_iPanelCount;
         G4double m_dWorldRadius;
         G4double m_dCubeFullEdge;
+
+        G4String m_sFilename;
 };
 
 #endif // _CUBE_DETECTOR_CONSTRUCTION_H_

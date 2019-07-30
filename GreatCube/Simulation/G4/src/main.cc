@@ -42,10 +42,10 @@ int main(int argc, char** argv) {
 
     std::unique_ptr<G4RunManager> runManager = std::unique_ptr<G4RunManager>(new G4RunManager);
 
-    auto detcon = new CubeDetectorConstruction();
+    auto detcon = new CubeDetectorConstruction(output_filename);
     runManager->SetUserInitialization(detcon);
     runManager->SetUserInitialization(new FTFP_BERT());
-    runManager->SetUserInitialization(new CubeActionInitialization(detcon, output_filename));
+    runManager->SetUserInitialization(new CubeActionInitialization(detcon));
 
     auto visMan = std::unique_ptr<G4VisExecutive>(new G4VisExecutive);
     visMan->Initialize();
@@ -58,8 +58,8 @@ int main(int argc, char** argv) {
         ui->SessionStart();
         delete ui;
     } else {
-        UIman->ApplyCommand("/control/verbose 2");
-        UIman->ApplyCommand("/run/verbose 2");
+        UIman->ApplyCommand("/control/verbose 1");
+        UIman->ApplyCommand("/run/verbose 1");
         UIman->ApplyCommand("/tracking/verbose 1");
         UIman->ApplyCommand("/run/initialize");
         UIman->ApplyCommand("/run/beamOn 3");
